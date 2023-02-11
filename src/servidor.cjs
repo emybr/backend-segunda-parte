@@ -33,26 +33,12 @@ app.get('/productos/:id', (req, res) => {
     } else {
         res.send(product);
     }
-   
 });
 
 
 
 
 
-
-
-
-// // Obtener producto por ID
-// app.get('/productos/:id', (req, res) => {
-//     const product = productManager.getProductById(req.params.id);
-//     if (!product) {
-//         res.status(404).send({ message: 'Producto no encontrado' });
-//     } else {
-//         res.send(product);
-//     }
-    
-// });
 
 
 

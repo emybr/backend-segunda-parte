@@ -149,5 +149,5 @@ productManager.saveProducts();
 console.log(productManager.getProductById(1));
 
 
-// exports.ProductManager = ProductManager;
+
 module.exports.ProductManager = ProductManager;
