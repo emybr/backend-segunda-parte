@@ -1,0 +1,38 @@
+[
+	{
+		"id": 1,
+		"title": "Producto 1 actualizado",
+		"description": "Descripción del producto 1 actualizada de nuevo",
+		"price": 600,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "123460",
+		"stock": 60
+	},
+	{
+		"id": 2,
+		"title": "Producto 4",
+		"description": "Descripción del producto 4",
+		"price": 800,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "123462",
+		"stock": 80
+	},
+	{
+		"id": 3,
+		"title": "Producto 5",
+		"description": "Descripción del producto 10",
+		"price": 1000,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "123463",
+		"stock": 100
+	},
+	{
+		"id": 4,
+		"title": "Producto 3",
+		"description": "Descripción del producto 3",
+		"price": 700,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "123461",
+		"stock": 70
+	}
+]
