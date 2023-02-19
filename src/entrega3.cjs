@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { json } = require('stream/consumers');
 
- class ProductManager {
+class ProductManager {
     constructor() {
         this.products = []; // Almacena la lista de productos
         this.id = 0; // Contador para generar el ID de cada producto
@@ -29,19 +29,26 @@ const { json } = require('stream/consumers');
         }
 
         // Crear un nuevo producto con un id autoincrementable
-        this.id++;
-        let newProduct = {
-            id: this.id,
-            title,
-            description,
-            price,
-            thumbnail,
-            code,
-            stock
-        };
-        this.products.push(newProduct);
+        if (this.products.find(product => product.id === this.id)) {
+            console.log("Ya existe un producto con ese id");
+            this.id = this.products.reduce((acc, product) => {
+                return product.id > acc ? product.id : acc;
+            }, 0) + 1;
+        } else {
+            let newProduct = {
+                id: this.id,
+                title,
+                description,
+                price,
+                thumbnail,
+                code,
+                stock
+            };
+            this.products.push(newProduct);
+            console.log("Producto agregado");
+            this.id++;
+        }
     }
-
     // Devuelve la lista de productos
     getProducts() {
         return this.products;
@@ -67,13 +74,15 @@ const { json } = require('stream/consumers');
         this.products = this.products.concat(products);
     }
     // Eliminalo producto por su ID
-    eliminarProducto(id) {
+    deleteProduct(id) {
         let product = this.products.find(product => product.id === id);
         if (!product) {
             console.log("Not found");
             return;
+
         }
         this.products.splice(product, 1);
+        console.log("Producto eliminado");
     }
 
     // Actualiza un producto por su ID
@@ -89,58 +98,30 @@ const { json } = require('stream/consumers');
         product.thumbnail = thumbnail;
         product.code = code;
         product.stock = stock;
+        console.log("Producto actualizado");
     }
 
 
 }
 
+// agregar productos al archivo json
 
-// Agregar un nuevo producto al archivo JSON
 const productManager = new ProductManager();
 productManager.loadProductsFromFile();
 
-let newProduct3 = {
-    title: "Producto 3",
-    description: "Descripción del producto 3",
-    price: 700,
-    thumbnail: "https://via.placeholder.com/150",
-    code: "123461",
-    stock: 70
-};
 
-let newProduct4 = {
-    title: "Producto 4",
-    description: "Descripción del producto 4",
-    price: 800,
-    thumbnail: "https://via.placeholder.com/150",
-    code: "123462",
-    stock: 80
-};
-
-let newProduct5 = {
-    title: "Producto 5",
-    description: "Descripción del producto 10",
-    price: 1000,
-    thumbnail: "https://via.placeholder.com/150",
-    code: "123463",
-    stock: 100
-};
-
-productManager.addProduct(newProduct3.title, newProduct3.description, newProduct3.price, newProduct3.thumbnail, newProduct3.code, newProduct3.stock);
-productManager.addProduct(newProduct4.title, newProduct4.description, newProduct4.price, newProduct4.thumbnail, newProduct4.code, newProduct4.stock);
-productManager.addProduct(newProduct5.title, newProduct5.description, newProduct5.price, newProduct5.thumbnail, newProduct5.code, newProduct5.stock);
 console.log(productManager.getProducts());
 productManager.saveProducts();
 
 // Elimina un producto
 
-productManager.eliminarProducto(5);
+productManager.deleteProduct(5);
 console.log(productManager.getProducts());
 productManager.saveProducts();
 
 // Actualiza un producto
 
-productManager.updateProduc(1, "Producto 1 actualizado", "Descripción del producto 1 actualizada de nuevo", 600, "https://via.placeholder.com/150", "123460", 60);
+productManager.updateProduc(1, "Producto 1 actualizado 2", "Descripción del producto 1 actualizada de nuevo 2", 600, "https://via.placeholder.com/150", "123460", 60);
 console.log(productManager.getProducts());
 productManager.saveProducts();
 
@@ -149,5 +130,6 @@ productManager.saveProducts();
 console.log(productManager.getProductById(1));
 
 
-
 module.exports.ProductManager = ProductManager;
+
+
