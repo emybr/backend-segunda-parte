@@ -1,47 +1,20 @@
 [
 	{
 		"id": 0,
-		"title": "Producto cargado creado desde post 4",
-		"description": "Descripción cargado desde post 4",
+		"title": "Producto cargado creado desde post 2",
+		"description": "Descripción cargado desde post 2",
 		"price": 900,
 		"thumbnail": "https://via.placeholder.com/150",
-		"code": "5678789",
+		"code": "4567",
 		"stock": 60
 	},
 	{
-		"id": 2,
-		"title": "Producto cargado creado desde post 4",
-		"description": "Descripción cargado desde post 4",
-		"price": 900,
-		"thumbnail": "https://via.placeholder.com/150",
-		"code": "7890",
-		"stock": 60
-	},
-	{
-		"id": 3,
-		"title": "Producto cargado creado desde post 4",
-		"description": "Descripción cargado desde post 4",
-		"price": 900,
-		"thumbnail": "https://via.placeholder.com/150",
-		"code": "78980",
-		"stock": 60
-	},
-	{
-		"id": 4,
+		"id": 1,
 		"title": "produrcto dos actualidado desde put",
 		"description": "produrcto dos actualidado desde put",
 		"price": 900,
 		"thumbnail": "https://via.placeholder.com/150",
 		"code": "45768",
-		"stock": 60
-	},
-	{
-		"id": 5,
-		"title": "Producto cargado creado desde post 5",
-		"description": "Descripción cargado desde post 5",
-		"price": 900,
-		"thumbnail": "https://via.placeholder.com/150",
-		"code": "4567",
 		"stock": 60
 	}
 ]
