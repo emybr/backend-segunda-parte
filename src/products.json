@@ -16,5 +16,14 @@
 		"thumbnail": "https://via.placeholder.com/150",
 		"code": "45768",
 		"stock": 60
+	},
+	{
+		"id": 2,
+		"title": "Producto cargado creado desde post 2",
+		"description": "Descripción cargado desde post 2",
+		"price": 900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "123345",
+		"stock": 60
 	}
 ]

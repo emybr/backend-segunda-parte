@@ -1,15 +1,35 @@
 [
 	{
 		"id": 0,
-		"timestamp": "2023-02-20T18:27:46.445Z",
-		"products": []
+		"timestamp": "2023-02-20T20:16:31.041Z",
+		"products": [
+			{
+				"id": 1,
+				"quantity": 3
+			}
+		]
 	},
 	{
 		"id": 1,
-		"timestamp": "2023-02-20T18:27:47.347Z",
+		"timestamp": "2023-02-20T20:16:49.099Z",
+		"products": []
+	},
+	{
+		"id": 2,
+		"timestamp": "2023-02-20T20:16:50.214Z",
+		"products": []
+	},
+	{
+		"id": 3,
+		"timestamp": "2023-02-20T20:16:50.928Z",
+		"products": []
+	},
+	{
+		"id": 4,
+		"timestamp": "2023-02-20T20:16:51.795Z",
 		"products": [
 			{
-				"id": 4,
+				"id": 1,
 				"quantity": 5
 			}
 		]
