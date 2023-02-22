@@ -10,11 +10,11 @@
 	},
 	{
 		"id": 1,
-		"title": "produrcto dos actualidado desde put",
-		"description": "produrcto dos actualidado desde put",
-		"price": 900,
+		"title": "Producto 1 actualizado 2",
+		"description": "Descripción del producto 1 actualizada de nuevo 2",
+		"price": 600,
 		"thumbnail": "https://via.placeholder.com/150",
-		"code": "45768",
+		"code": "123460",
 		"stock": 60
 	},
 	{
