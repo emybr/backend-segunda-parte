@@ -1,20 +1,11 @@
 [
 	{
-		"id": 0,
-		"title": "Producto cargado creado desde post 2",
-		"description": "Descripción cargado desde post 2",
+		"id": 1,
+		"title": "produrcto dos actualidado desde put",
+		"description": "produrcto dos actualidado desde put",
 		"price": 900,
 		"thumbnail": "https://via.placeholder.com/150",
-		"code": "4567",
-		"stock": 60
-	},
-	{
-		"id": 1,
-		"title": "Producto 1 actualizado 2",
-		"description": "Descripción del producto 1 actualizada de nuevo 2",
-		"price": 600,
-		"thumbnail": "https://via.placeholder.com/150",
-		"code": "123460",
+		"code": "45768",
 		"stock": 60
 	},
 	{
