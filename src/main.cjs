@@ -6,7 +6,7 @@ const routes = require('./routes.cjs');
 const { webRouter } = require('./webRouters.cjs');
 const httpServer = require('http').createServer(app);
 const { Server } = require('socket.io');
-const { SoketIOServer } = require('socket.io');
+const { SocketIOServer } = require('socket.io');
 const { ProductManager } = require('./entrega3.cjs');
 
 
@@ -40,21 +40,20 @@ io.on('connection', (socket) => {
     console.log(products);
 
 
-    socket.on('newProduct', (product, callback) => {
+    socket.on('newProduct', (product) => {
         try {
             // Agrega el nuevo producto al ProductManager
             productManager.addProduct(product);
-
-            // Confirma que el producto se agregó correctamente
-            callback({ status: 'ok' });
-
+            console.log(product);
+    
             // Emite la lista actualizada de productos a todos los clientes
             io.emit('updateProducts', { products: productManager.getProducts() });
         } catch (error) {
             // Si ocurre un error, envía un mensaje de error al cliente
-            callback({ status: 'error', message: error.message });
+            socket.emit('errorMessage', { status: 'error', message: error.message });
         }
     });
+    
 
     socket.on('disconnect', () => {
         console.log('Cliente desconectado');

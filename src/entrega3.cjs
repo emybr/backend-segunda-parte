@@ -18,8 +18,10 @@ class ProductManager  {
         if (!title || !description || !price || !thumbnail || !code || !stock) {
             console.log("Todos los campos son obligatorios");
             return;
+            
         }
-
+        console.log(addProduct);
+        
         // Validar que no se repita el campo "code"
         let existingProduct = this.products.find(product => product.code === code);
         if (existingProduct) {
