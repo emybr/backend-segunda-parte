@@ -124,5 +124,14 @@
 		"thumbnail": "https://via.placeholder.com/150",
 		"code": "0967123dfgert4412321232345342353456556785678671232433456575672936456567678sd789678f45",
 		"stock": 60
+	},
+	{
+		"id": 21,
+		"title": "soket si si",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "5675",
+		"stock": 60
 	}
 ]

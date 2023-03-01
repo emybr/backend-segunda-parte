@@ -39,13 +39,14 @@ io.on('connection', (socket) => {
     socket.emit('products', { products: products });
     console.log(products);
 
+// agrego  ruta de soket io para recibir un nuevo producto y emitirlo a todos los clientes
 
     socket.on('newProduct', (product) => {
         try {
             // Agrega el nuevo producto al ProductManager
-            productManager.addProduct(product);
+            productManager.addProduct(product.title, product.description, product.price, product.thumbnail, product.code, product.stock);
             console.log(product);
-    
+
             // Emite la lista actualizada de productos a todos los clientes
             io.emit('updateProducts', { products: productManager.getProducts() });
         } catch (error) {
@@ -53,7 +54,7 @@ io.on('connection', (socket) => {
             socket.emit('errorMessage', { status: 'error', message: error.message });
         }
     });
-    
+
 
     socket.on('disconnect', () => {
         console.log('Cliente desconectado');
