@@ -7,6 +7,7 @@ const productManager = new ProductManager();
 productManager.loadProductsFromFile();
 
 const carts = new Carts();
+router.use(express.json());
 
 router.get('/products/:pid', (req, res) => {
     const product = productManager.getProductById(Number(req.params.pid));

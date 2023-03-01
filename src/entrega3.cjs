@@ -20,8 +20,7 @@ class ProductManager  {
             return;
             
         }
-        console.log(addProduct);
-        
+
         // Validar que no se repita el campo "code"
         let existingProduct = this.products.find(product => product.code === code);
         if (existingProduct) {
@@ -110,6 +109,12 @@ class ProductManager  {
 
 const productManager = new ProductManager();
 productManager.loadProductsFromFile();
+
+productManager.addProduct("Producto 1", "Descripción del producto 1", 500, "https://via.placeholder.com/150", "123456", 50);
+
+
+
+
 
 
 console.log(productManager.getProducts());

@@ -1,11 +1,11 @@
 [
 	{
 		"id": 8,
-		"title": "Producto cargado creado desde post 2",
-		"description": "Descripción cargado desde post 2 y handlebars",
+		"title": "produrcto dos actualidado desde soket ok",
+		"description": "produrcto dos actualidado desde put",
 		"price": 900,
 		"thumbnail": "https://via.placeholder.com/150",
-		"code": "5769023445986587654",
+		"code": "45768",
 		"stock": 60
 	},
 	{

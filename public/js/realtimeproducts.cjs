@@ -22,7 +22,7 @@ function renderProducts(products) {
 
 socket.on('products', data => {
   renderProducts(data.products);
-  console.log(data.products);
+  
 });
 
 socket.on('updateProducts', data => {
