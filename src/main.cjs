@@ -6,26 +6,28 @@ const routes = require('./routes.cjs');
 const { webRouter } = require('./webRouters.cjs');
 const httpServer = require('http').createServer(app);
 const { Server } = require('socket.io');
-const { SocketIOServer } = require('socket.io');
 const { ProductManager } = require('./entrega3.cjs');
-
+const mongoRoutes = require('./routes-mongo.cjs');
+const Database = require('./mongo.cjs');
+const db = new Database();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.engine(`handlebars`, engine());
-app.set(`views`, `../views`);
-app.set(`view engine`, `handlebars`);
+app.engine('handlebars', engine());
+app.set('views', './views');
+app.set('view engine', 'handlebars');
 
-app.use(express.static('../public'));
+app.use(express.static('public'));
 
+app.use('/db', mongoRoutes);
 app.use('/api', routes);
 app.use('/', webRouter);
 
-httpServer.listen(port, () => {
+httpServer.listen(port, async () => {
     console.log(`Servidor corriendo en el puerto ${port}`);
+    await db.connectToDatabase(); // Conéctate a la base de datos de MongoDB
 });
-
 
 const io = new Server(httpServer);
 
@@ -39,22 +41,16 @@ io.on('connection', (socket) => {
     socket.emit('products', { products: products });
     console.log(products);
 
-// agrego  ruta de soket io para recibir un nuevo producto y emitirlo a todos los clientes
-
-    socket.on('newProduct', (product) => {
+    socket.on('newProduct', async (product) => {
         try {
-            // Agrega el nuevo producto al ProductManager
-            productManager.addProduct(product.title, product.description, product.price, product.thumbnail, product.code, product.stock);
+            await db.createProduct(product.title, product.description, product.price, product.thumbnail, product.code, product.stock);
             console.log(product);
 
-            // Emite la lista actualizada de productos a todos los clientes
-            io.emit('updateProducts', { products: productManager.getProducts() });
+            io.emit('updateProducts', { products: await db.getAllProducts() });
         } catch (error) {
-            // Si ocurre un error, envía un mensaje de error al cliente
             socket.emit('errorMessage', { status: 'error', message: error.message });
         }
     });
-
 
     socket.on('disconnect', () => {
         console.log('Cliente desconectado');
