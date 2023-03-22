@@ -11,14 +11,17 @@ const mongoRoutes = require('./routes-mongo.cjs');
 const Database = require('./mongo.cjs');
 const db = new Database();
 
+const database = new Database();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.engine('handlebars', engine());
-app.set('views', './views');
+app.set('views', '../views');
 app.set('view engine', 'handlebars');
 
-app.use(express.static('public'));
+
+app.use(express.static('../public'));
 
 app.use('/db', mongoRoutes);
 app.use('/api', routes);
@@ -52,7 +55,18 @@ io.on('connection', (socket) => {
         }
     });
 
+
+    socket.on('chat message', async (message, username) => {
+        console.log(`${username}: ${message}`);
+        // Guardar el mensaje en la base de datos
+        await database.insertMessage(message, username);
+        // Emitir el mensaje a todos los clientes conectados
+        io.emit('chat message', message, username);
+    });
+
     socket.on('disconnect', () => {
         console.log('Cliente desconectado');
     });
 });
+
+

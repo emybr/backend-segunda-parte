@@ -1,7 +1,4 @@
-
 const { MongoClient } = require('mongodb');
-
-// const db = new Database()
 
 class Database {
   constructor() {
@@ -11,10 +8,10 @@ class Database {
 
   async connectToDatabase() {
     try {
-      // await this.client.connectToDatabase();
       await this.client.connect();
       console.log("Conectado correctamente a la base de datos mongo");
       this.database = this.client.db("products").collection("products");
+      this.messagesCollection = this.client.db("messages").collection("messages");
     } catch (e) {
       console.error(e);
     }
@@ -24,57 +21,69 @@ class Database {
     await this.client.close();
   }
 
-
   async getAllProducts() {
-  try {
-    if (!this.database) {
-      await this.connectToDatabase();
+    try {
+      if (!this.database) {
+        await this.connectToDatabase();
+      }
+      const result = await this.database.find({}).toArray();
+      return result;
+    } catch (e) {
+      console.error(e);
     }
-    const result = await this.database.find({}).toArray();
-    return result;
-  } catch (e) {
-    console.error(e);
   }
-}
 
-async createProduct(name, price) {
-  try {
-    if (!this.database) {
-      await this.connectToDatabase();
+  async createProduct(name, price) {
+    try {
+      if (!this.database) {
+        await this.connectToDatabase();
+      }
+      const result = await this.database.insertOne({ name, price });
+      return result;
+    } catch (e) {
+      console.error(e);
     }
-    const result = await this.database.insertOne({ name, price });
-    return result;
-  } catch (e) {
-    console.error(e);
   }
-}
 
-async updateProduct(id, name, price) {
-  try {
-    if (!this.database) {
-      await this.connectToDatabase();
+  async updateProduct(id, name, price) {
+    try {
+      if (!this.database) {
+        await this.connectToDatabase();
+      }
+      const result = await this.database.updateOne(
+        { _id: id },
+        { $set: { name: name, price: price } }
+      );
+      return result;
+    } catch (e) {
+      console.error(e);
     }
-    const result = await this.database.updateOne(
-      { _id: id },
-      { $set: { name: name, price: price } }
-    );
-    return result;
-  } catch (e) {
-    console.error(e);
   }
-}
 
-async deleteProduct(id) {
-  try {
-    if (!this.database) {
-      await this.connectToDatabase();
+  async deleteProduct(id) {
+    try {
+      if (!this.database) {
+        await this.connectToDatabase();
+      }
+      const result = await this.database.deleteOne({ _id: id });
+      return result;
+    } catch (e) {
+      console.error(e);
     }
-    const result = await this.database.deleteOne({ _id: id });
-    return result;
-  } catch (e) {
-    console.error(e);
   }
-}
+
+  async insertMessage(message, username) {
+    try {
+      if (!this.messagesCollection) {
+        await this.connectToDatabase();
+      }
+      const result = await this.messagesCollection.insertOne({ message, username });
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
 }
 
 

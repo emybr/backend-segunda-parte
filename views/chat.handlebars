@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{title}}</title>
+</head>
+
+<body>
+    <h1>Chat</h1>
+    <form id="chat-form">
+        <input type="text" id="username-input" placeholder="Nombre de usuario">
+        <input type="text" id="message-input" placeholder="Escribe un mensaje">
+        <button type="submit">Enviar</button>
+    </form>
+    <ul id="chat-list"></ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Conectando con el servidor de Socket.io
+        const socket = io();
+
+        // Obteniendo el elemento de la lista de chat
+        const chatList = document.getElementById('chat-list');
+
+        // Obteniendo el formulario y los campos de entrada
+        const chatForm = document.getElementById('chat-form');
+        const usernameInput = document.getElementById('username-input');
+        const messageInput = document.getElementById('message-input');
+
+        // Manejando el envío del formulario
+        chatForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const username = usernameInput.value.trim();
+            const message = messageInput.value.trim();
+            if (username && message) {
+                // Emitiendo un evento de chat al servidor con el nombre de usuario
+                socket.emit('chat message', message, username);
+                messageInput.value = '';
+            }
+        });
+
+        // Escuchando eventos de chat del servidor
+        socket.on('chat message', (msg, username) => {
+            // Agregando mensajes a la lista de chat con el nombre de usuario
+            const item = document.createElement('li');
+            item.textContent = `${username}: ${msg}`;
+            chatList.appendChild(item);
+        });
+    </script>
+</body>
+
+</html>

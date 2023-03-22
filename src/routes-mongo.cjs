@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const Database = require('./mongo.cjs');
+const { route } = require('./routes.cjs');
 
 // Crear una instancia de la clase Database
 const database = new Database();
@@ -51,6 +52,7 @@ router.delete('/mongo/products/:id', async (req, res) => {
         res.status(500).send(error.message);
     }
 });
+
 
 module.exports = router;
 
