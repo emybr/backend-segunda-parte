@@ -11,6 +11,10 @@ const mongoRoutes = require('./routes-mongo.cjs');
 const Database = require('./mongo.cjs');
 const db = new Database();
 
+const axios = require('axios');
+const OPENAI_API_KEY = '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';
+
+
 const database = new Database();
 
 app.use(express.json());
@@ -56,17 +60,40 @@ io.on('connection', (socket) => {
     });
 
 
+    // socket.on('chat message', async (message, username) => {
+    //     console.log(`${username}: ${message}`);
+    //     // Guardar el mensaje en la base de datos
+    //     await database.insertMessage(message, username);
+    //     // Emitir el mensaje a todos los clientes conectados
+    //     io.emit('chat message', message, username);
+    // });
+
+    // socket.on('disconnect', () => {
+    //     console.log('Cliente desconectado');
+    // });
+
     socket.on('chat message', async (message, username) => {
         console.log(`${username}: ${message}`);
         // Guardar el mensaje en la base de datos
         await database.insertMessage(message, username);
-        // Emitir el mensaje a todos los clientes conectados
-        io.emit('chat message', message, username);
+        // Obtener la respuesta de Chat-GPT
+        const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-002/completions', {
+            prompt: message,
+            max_tokens: 1000,
+            temperature: 0.5
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' +  OPENAI_API_KEY // Reemplaza OPENAI_API_KEY con tu clave de API de Chat-GPT
+            }
+        });
+        const botMessage = response.data.choices[0].text;
+        // Emitir el mensaje del bot a todos los clientes conectados
+        io.emit('chat message', botMessage, 'Bot');
     });
 
-    socket.on('disconnect', () => {
-        console.log('Cliente desconectado');
-    });
+
+
 });
 
 

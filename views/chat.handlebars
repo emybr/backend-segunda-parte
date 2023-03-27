@@ -42,7 +42,8 @@
         socket.on('chat message', (msg, username) => {
             // Agregando mensajes a la lista de chat con el nombre de usuario
             const item = document.createElement('li');
-            item.textContent = `${username}: ${msg}`;
+            //item.textContent = `${username}: ${msg}`;
+            item.textContent = `${username} ${msg}`;
             chatList.appendChild(item);
         });
     </script>
