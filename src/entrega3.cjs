@@ -112,11 +112,6 @@ productManager.loadProductsFromFile();
 
 productManager.addProduct("Producto 1", "Descripción del producto 1", 500, "https://via.placeholder.com/150", "123456", 50);
 
-
-
-
-
-
 console.log(productManager.getProducts());
 productManager.saveProducts();
 

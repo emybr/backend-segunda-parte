@@ -7,11 +7,24 @@ const { route } = require('./routes.cjs');
 // Crear una instancia de la clase Database
 const database = new Database();
 
+
+// Ruta para agregar un nuevo producto
+
+router.post('/mongo/products/addproduts', async (req, res) => {
+    try {
+        const { id,title, description, price, thumbnail, code, stock } = req.body;
+        const result = await database.createProduct(id,title, description, price, thumbnail, code, stock);
+        res.json(result);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
 // Ruta para obtener todos los productos
 
 router.get('/mongo/products', async (req, res) => {
     try {
-        const limit = parseInt(req.query.limit) || 10; // Si no se especifica limit, se establece en 10
+        const limit = parseInt(req.query.limit) || 5; // Si no se especifica limit, se establece en 10
         const page = parseInt(req.query.page) || 1; // Si no se especifica page, se establece en 1
         const sort = req.query.sort; // El parámetro sort es opcional
         const query = req.query.query; // El parámetro query es opcional
@@ -23,8 +36,8 @@ router.get('/mongo/products', async (req, res) => {
         const hasNextPage = page < totalPages;
         const prevPage = hasPrevPage ? page - 1 : null;
         const nextPage = hasNextPage ? page + 1 : null;
-        const prevLink = hasPrevPage ? `${req.protocol}://${req.get('host')}${req.path}?limit=${limit}&page=${prevPage}&sort=${sort}&query=${query}` : null;
-        const nextLink = hasNextPage ? `${req.protocol}://${req.get('host')}${req.path}?limit=${limit}&page=${nextPage}&sort=${sort}&query=${query}` : null;
+        const prevLink = hasPrevPage ? `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}?limit=${limit}&page=${prevPage}` : null;
+        const nextLink = hasNextPage ? `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}?limit=${limit}&page=${nextPage}` : null;
 
         res.json({
             status: 'success',
@@ -43,16 +56,7 @@ router.get('/mongo/products', async (req, res) => {
     }
 });
 
-// Ruta para agregar un nuevo producto
-router.post('/mongo/products/addproduts', async (req, res) => {
-    try {
-        const { title, description, price, thumbnail, code, stock } = req.body;
-        const result = await database.createProduct(title, description, price, thumbnail, code, stock);
-        res.json(result);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
+
 
 // Ruta para actualizar un producto existente
 router.put('/mongo/products/:id', async (req, res) => {

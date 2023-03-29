@@ -91,9 +91,6 @@ io.on('connection', (socket) => {
         // Emitir el mensaje del bot a todos los clientes conectados
         io.emit('chat message', botMessage, 'Bot');
     });
-
-
-
 });
 
 

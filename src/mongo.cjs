@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb');
+const { get } = require('./routes.cjs');
 
 class Database {
   constructor() {
@@ -46,14 +47,25 @@ class Database {
   }
 
 
+  async getCartsById(id) {
+    try {
+      if (!this.cartsCollection) {
+        await this.connectToDatabase();
+      }
+      const cart = await this.cartsCollection.findOne({ _id: id });
+      return cart;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
 
-  async createProduct(title, description, price, thumbnail, code, stock) {
+  async createProduct(id,title, description, price, thumbnail, code, stock) {
     try {
       if (!this.database) {
         await this.connectToDatabase();
       }
-      const result = await this.database.insertOne({ title, description, price, thumbnail, code, stock });
+      const result = await this.database.insertOne({id, title, description, price, thumbnail, code, stock });
       return result;
     } catch (e) {
       console.error(e);
@@ -176,8 +188,20 @@ class Database {
   }
   
   
+  async getTotalCarts() {
+    try {
+      if (!this.cartsCollection) {
+        await this.connectToDatabase();
+      }
+      const totalCarts = await this.cartsCollection.countDocuments();
+      return totalCarts;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+
 
 }
-
 
 module.exports = Database;

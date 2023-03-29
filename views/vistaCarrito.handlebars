@@ -1,36 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Carrito</title>
 </head>
 <body>
-    <div class="products">
-  {{#each products}}
-    <div class="product-card">
-      <h2>{{title}}</h2>
-      <img src="{{thumbnail}}" alt="{{title}} image">
-      <p>{{description}}</p>
-      <p>Price: {{price}}</p>
-    </div>
-  {{/each}}
-</div>
-
-<div class="pagination">
-  {{#if prevPage}}
-    <a href="/products?page={{prevPage}}&limit={{limit}}" class="page-btn">&laquo; Previous</a>
-  {{/if}}
-
-  {{#each pages}}
-    <a href="/products?page={{this}}&limit={{limit}}" class="{{#if isActive}}active{{/if}} page-btn">{{this}}</a>
-  {{/each}}
-
-  {{#if nextPage}}
-    <a href="/products?page={{nextPage}}&limit={{limit}}" class="page-btn">Next &raquo;</a>
-  {{/if}}
-</div>
-
+    <h1>Detalles del carrito:</h1>
+    <p><strong>ID del carrito:</strong> {{cart._id}}</p>
+    <p><strong>Fecha de creación:</strong> {{cart.timestamp}}</p>
+    <p><strong>Productos:</strong></p>
+    <ul>
+        {{#each cart.products}}
+            <li>id: {{id}}</li>
+            <li>title: {{title}}</li>
+            <li>description: {{description}}</li>
+            <li>price: {{price}}</li>
+            <li>thumbnail: {{thumbnail}}</li>
+        {{/each}}
+    </ul>
 </body>
 </html>
