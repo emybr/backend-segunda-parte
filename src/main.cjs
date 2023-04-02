@@ -10,12 +10,26 @@ const { ProductManager } = require('./entrega3.cjs');
 const mongoRoutes = require('./routes-mongo.cjs');
 const Database = require('./mongo.cjs');
 const db = new Database();
+const session = require('express-session');
+const fileStore = require('session-file-store');
+const FileStore = fileStore(session);
 
 const axios = require('axios');
 const OPENAI_API_KEY = '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';
 
 
 const database = new Database();
+
+//agrego fileStore
+
+
+
+app.use(session({
+    store: new FileStore({}),
+    secret: 'secreto',
+    resave: false,
+    saveUninitialized: true
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -1,5 +1,7 @@
 const { MongoClient } = require('mongodb');
 const { get } = require('./routes.cjs');
+const bcrypt = require('bcrypt');
+
 
 class Database {
   constructor() {
@@ -14,6 +16,7 @@ class Database {
       this.database = this.client.db("products").collection("products");
       this.messagesCollection = this.client.db("messages").collection("messages");
       this.cartsCollection = this.client.db("carts").collection("carts");
+      this.usersCollection = this.client.db("users").collection("users");
     } catch (e) {
       console.error(e);
     }
@@ -201,7 +204,43 @@ class Database {
   }
 
 
+  // agrego metodo para crear login
+
+  async createUser(nombre, apellido, edad, email, password) {
+    try {
+      if (!this.usersCollection) {
+        await this.connectToDatabase();
+      }
+      const result = await this.usersCollection.insertOne({ nombre, apellido, edad, email, password });
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
+}
+
+
+
+  async validateUser(email, password) {
+    try {
+      if (!this.usersCollection) {
+        await this.connectToDatabase();
+      }
+      const user = await this.usersCollection.findOne({ email, password });
+      return user !== null;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+
+  async getUserByEmail(email) {
+    const user = await this.usersCollection.findOne({ email });
+    return user;
+  }
+  
+  
 
 }
+
 
 module.exports = Database;

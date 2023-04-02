@@ -1,6 +1,7 @@
 const express = require('express');
 const { ProductManager } = require('./entrega3.cjs');
 const Database = require('./mongo.cjs');
+const bcrypt = require('bcrypt');
 
 const productManager = new ProductManager();
 const database = new Database();
@@ -12,6 +13,48 @@ webRouter.get('/products', (req, res) => {
     res.render('products', { products: products });
     console.log(products);
 });
+
+// agrego ruta para login
+
+webRouter.get('/login', async (req, res) => {
+    res.render('login');
+});
+
+webRouter.get('/register', async (req, res) => {
+    res.render('register');
+});
+
+webRouter.post('/register', async (req, res) => {
+    try {
+        const  { nombre, apellido, edad, email, password } = req.body;
+        await database.createUser(nombre, apellido, edad, email, password);
+        res.redirect('/login');
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+
+
+webRouter.post('/login', async (req, res) => {
+    try {
+        const {email, password} = req.body;
+        const user = await database.getUserByEmail(email);
+        if (!user) {
+            res.status(401).send('Usuario no encontrado');
+        } else {
+            const isValid = await database.validateUser(email, password);
+            if (isValid) {
+                res.redirect('/products/db');
+            } else {
+                res.status(401).send('Contraseña usuario o incorrecta');
+            }
+        }
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
 
 // agrego ruta chat 
 
@@ -29,9 +72,9 @@ webRouter.get('/products/db', async (req, res) => {
         const query = req.query.query;
 
         const products = await database.getProducts(limit, page, sort, query)
-            
+
         const totalProducts = await database.getTotalProducts({
-                $text: { $search: query },
+            $text: { $search: query },
         });
 
         const totalPages = Math.ceil(totalProducts / limit);
