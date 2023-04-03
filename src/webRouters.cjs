@@ -14,6 +14,7 @@ webRouter.get('/products', (req, res) => {
     console.log(products);
 });
 
+
 // agrego ruta para login
 
 webRouter.get('/login', async (req, res) => {
@@ -49,6 +50,11 @@ webRouter.post('/login', async (req, res) => {
     }
 });
 
+// creo ruta logout que redirecciona a login
+
+webRouter.post('/logout', async (req, res) => {
+    res.redirect('/login');
+});
 
 // agrego ruta chat 
 
