@@ -35,20 +35,14 @@ webRouter.post('/register', async (req, res) => {
 });
 
 
-
 webRouter.post('/login', async (req, res) => {
     try {
         const {email, password} = req.body;
-        const user = await database.getUserByEmail(email);
-        if (!user) {
-            res.status(401).send('Usuario no encontrado');
+        const isValid = await database.validateUser(email, password);
+        if (isValid) {
+            res.redirect('/products/db');
         } else {
-            const isValid = await database.validateUser(email, password);
-            if (isValid) {
-                res.redirect('/products/db');
-            } else {
-                res.status(401).send('Contraseña usuario o incorrecta');
-            }
+            res.status(401).send('Contraseña usuario o incorrecta');
         }
     } catch (error) {
         res.status(500).send(error.message);

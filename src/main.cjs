@@ -13,6 +13,8 @@ const db = new Database();
 const session = require('express-session');
 const fileStore = require('session-file-store');
 const FileStore = fileStore(session);
+const MongoStore = require('connect-mongo');
+
 
 const axios = require('axios');
 const OPENAI_API_KEY = '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';
@@ -24,12 +26,16 @@ const database = new Database();
 
 
 
-app.use(session({
-    store: new FileStore({}),
-    secret: 'secreto',
-    resave: false,
-    saveUninitialized: true
-}));
+// app.use(session({
+//     store: new MongoStore({
+//         mongooseConnection: db.connection,
+//         ttl: 60 * 60, // Tiempo de expiración de la sesión en segundos (opcional)
+//       }),
+//       secret: 'secreto',
+//       resave: false,
+//       saveUninitialized: true,
+//         cookie: { secure: false }
+//     }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -232,14 +232,6 @@ class Database {
     }
   }
 
-
-  async getUserByEmail(email) {
-    const user = await this.usersCollection.findOne({ email });
-    return user;
-  }
-  
-  
-
 }
 
 
