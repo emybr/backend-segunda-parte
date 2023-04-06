@@ -11,8 +11,23 @@ const mongoRoutes = require('./routes-mongo.cjs');
 const Database = require('./mongo.cjs');
 const db = new Database();
 const session = require('express-session');
-const fileStore = require('session-file-store');
+const FileStore = require('session-file-store')(session);
+const MongoStore = require('connect-mongo');
 
+// creo configuracion de mango para guardar sesiones
+
+const store = MongoStore.create({
+    mongoUrl: 'mongodb+srv://emybr82ar:92713@cluster0.apsr9qa.mongodb.net/?retryWrites=true&w=majority',
+    mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+    ttl: 60 * 60 * 24 * 7 // 1 week
+});
+
+app.use(session({
+    secret: 'secreto',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+}));
 
 
 const axios = require('axios');

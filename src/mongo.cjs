@@ -204,19 +204,37 @@ class Database {
   }
 
 
-  // agrego metodo para crear login
-
   async createUser(nombre, apellido, edad, email, password) {
     try {
       if (!this.usersCollection) {
         await this.connectToDatabase();
       }
-      const result = await this.usersCollection.insertOne({ nombre, apellido, edad, email, password });
-      return result;
+      const isAdmin = email === 'admin@example.com';
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await this.usersCollection.insertOne({ nombre, apellido, edad, email, password: hashedPassword, role: isAdmin ? 'admin' : 'user' });
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
+
+  async setAdminRole(email) {
+    try {
+      if (!this.usersCollection) {
+        await this.connectToDatabase();
+      }
+      const user = await this.usersCollection.findOne({ email });
+      if (!user) {
+        throw new Error('User not found');
+      }
+      user.role = 'admin';
+      await this.usersCollection.replaceOne({ email }, user);
+      return user;
     } catch (e) {
       console.error(e);
     }
-}
+  }
+  
 
 
 
@@ -231,6 +249,18 @@ class Database {
       console.error(e);
     }
   }
+
+  async getUserByEmail(email) {
+  try {
+    if (!this.usersCollection) {
+      await this.connectToDatabase();
+    }
+    return await this.usersCollection.findOne({ email });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 
 }
 

@@ -25,38 +25,58 @@ webRouter.get('/register', async (req, res) => {
     res.render('register');
 });
 
+//agrego ruta de registro con usuario admin y contraseña admin (12345)
 webRouter.post('/register', async (req, res) => {
     try {
         const  { nombre, apellido, edad, email, password } = req.body;
         await database.createUser(nombre, apellido, edad, email, password);
+        if (email === 'admin@example.com') {
+            await database.setAdminRole(email);
+        }
         res.redirect('/login');
     } catch (error) {
         res.status(500).send(error.message);
     }
 });
 
+// agrego ruta para login cque valida si la contraseña es correcta y si es admin o no
 
 webRouter.post('/login', async (req, res) => {
     try {
-        const {email, password} = req.body;
-        const isValid = await database.validateUser(email, password);
-        if (isValid) {
-            res.redirect('/products/db');
+        const { email, password } = req.body;
+        const user = await database.getUserByEmail(email);
+        if (user) {
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (isPasswordValid) {
+                req.session.email = email;
+                if (user.role === 'admin') {
+                    req.session.isAdmin = true;
+                }
+                const welcomeMessage = `Bienvenido, ${email} 😃`;
+                req.session.message = welcomeMessage;
+                res.redirect('/products/db');
+            } else {
+                res.status(401).send('Contraseña o usuario incorrectos');
+            }
         } else {
-            res.status(401).send('Contraseña usuario o incorrecta');
+            res.status(401).send('Contraseña o usuario incorrectos');
         }
     } catch (error) {
         res.status(500).send(error.message);
     }
 });
 
-// creo ruta logout que redirecciona a login
+// agrego ruta para logout que si es admin destruye la sesion y si no es admin solo setea el email en null
 
 webRouter.post('/logout', async (req, res) => {
+    if (req.session.email === 'admin@example.com') {
+        req.session.destroy();
+    } else {
+        req.session.email = null;
+    }
     res.redirect('/login');
 });
 
-// agrego ruta chat 
 
 webRouter.get('/chat', async (req, res) => {
     res.render('chat');
@@ -99,6 +119,7 @@ webRouter.get('/products/db', async (req, res) => {
             hasNextPage,
             prevLink,
             nextLink,
+            message: req.session.message,
         });
     } catch (error) {
         res.status(500).send(error.message);

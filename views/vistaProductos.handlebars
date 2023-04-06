@@ -1,45 +1,51 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Productos</title>
-  </head>
-  <body>
-    <h1>Productos</h1>
-    {{#if products}}
-      <ul>
-        {{#each products}}
-          <li>
-            <h1>id:{{id}}</h1>
-            <p>Title:{{this.title}}</p>
-            <p>Description:{{this.description}}</p>
-            <p>Precio: {{this.price}}</p>
-            <form action="/db/mongo/carts/6422fa4c4f23c277a7a62a1b" method="POST">
-              <input type="hidden" name="id" value="{{this.id}}">
-              <input type="hidden" name="title" value="{{this.title}}">
-              <input type="hidden" name="description" value="{{this.description}}">
-              <input type="hidden" name="price" value="{{this.price}}">
-              <input type="hidden" name="thumbnail" value="{{this.thumbnail}}">
-            <button type="submit">Agregar al carrito</button>
-            </form>
-          </li>
-        {{/each}}
-      </ul>
-      {{#if totalPages}}
-        <div>
-          {{#if prevLink}}
-            <a href="{{prevLink}}">Anterior</a>
-          {{/if}}
-          {{#if hasNextPage}}
-            <a href="{{nextLink}}">Siguiente</a>
-          {{/if}}
-        </div>
-      {{/if}}
-    {{else}}
-      <p>No hay productos disponibles.</p>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Productos</title>
+</head>
+
+<body>
+  {{#if message}}
+        <p>{{message}}</p>
+  {{/if}}
+  <h1>Productos</h1>
+  {{#if products}}
+  <ul>
+    {{#each products}}
+    <li>
+      <h1>id:{{id}}</h1>
+      <p>Title:{{this.title}}</p>
+      <p>Description:{{this.description}}</p>
+      <p>Precio: {{this.price}}</p>
+      <form action="/db/mongo/carts/6422fa4c4f23c277a7a62a1b" method="POST">
+        <input type="hidden" name="id" value="{{this.id}}">
+        <input type="hidden" name="title" value="{{this.title}}">
+        <input type="hidden" name="description" value="{{this.description}}">
+        <input type="hidden" name="price" value="{{this.price}}">
+        <input type="hidden" name="thumbnail" value="{{this.thumbnail}}">
+        <button type="submit">Agregar al carrito</button>
+      </form>
+    </li>
+    {{/each}}
+  </ul>
+  {{#if totalPages}}
+  <div>
+    {{#if prevLink}}
+    <a href="{{prevLink}}">Anterior</a>
     {{/if}}
-    <form action="/logout" method="POST">
-      <button type="submit">Cerrar sesión</button>
-    </form>
-  </body>
+    {{#if hasNextPage}}
+    <a href="{{nextLink}}">Siguiente</a>
+    {{/if}}
+  </div>
+  {{/if}}
+  {{else}}
+  <p>No hay productos disponibles.</p>
+  {{/if}}
+  <form action="/logout" method="POST">
+    <button type="submit">Cerrar sesión</button>
+  </form>
+</body>
+
 </html>
