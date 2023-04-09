@@ -7,6 +7,8 @@ const productManager = new ProductManager();
 const database = new Database();
 const webRouter = express.Router();
 productManager.loadProductsFromFile();
+const passport = require('passport');
+
 
 webRouter.get('/products', (req, res) => {
     const products = productManager.getProducts();
@@ -39,32 +41,31 @@ webRouter.post('/register', async (req, res) => {
     }
 });
 
-// agrego ruta para login cque valida si la contraseña es correcta y si es admin o no
 
-webRouter.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await database.getUserByEmail(email);
-        if (user) {
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            if (isPasswordValid) {
-                req.session.email = email;
-                if (user.role === 'admin') {
-                    req.session.isAdmin = true;
-                }
-                const welcomeMessage = `Bienvenido, ${email} 😃`;
-                req.session.message = welcomeMessage;
-                res.redirect('/products/db');
-            } else {
-                res.status(401).send('Contraseña o usuario incorrectos');
-            }
-        } else {
-            res.status(401).send('Contraseña o usuario incorrectos');
+webRouter.post('/login', async (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return next(err);
         }
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+        if (!user) {
+            return res.status(401).send(info.message);
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+            req.session.email = user.email;
+            if (user.role === 'admin') {
+                req.session.isAdmin = true;
+            }
+            const welcomeMessage = `Bienvenido, ${user.email} 😃`;
+            req.session.message = welcomeMessage;
+            return res.redirect('/products/db');
+        });
+    })(req, res, next);
 });
+
+
 
 // agrego ruta para logout que si es admin destruye la sesion y si no es admin solo setea el email en null
 
@@ -141,3 +142,4 @@ webRouter.get('/carts/db/:cartId', async (req, res) => {
 });
 
 module.exports = { webRouter };
+

@@ -3,6 +3,7 @@ const { get } = require('./routes.cjs');
 const bcrypt = require('bcrypt');
 
 
+
 class Database {
   constructor() {
     this.uri = "mongodb+srv://emybr82ar:92713@cluster0.apsr9qa.mongodb.net/?retryWrites=true&w=majority";
@@ -203,6 +204,7 @@ class Database {
     }
   }
 
+  //estratejia de autenticacion
 
   async createUser(nombre, apellido, edad, email, password) {
     try {
@@ -250,19 +252,38 @@ class Database {
     }
   }
 
-  async getUserByEmail(email) {
+
+// agrego passport y passport-local
+
+
+async getUserByEmail(email) {
   try {
     if (!this.usersCollection) {
       await this.connectToDatabase();
     }
-    return await this.usersCollection.findOne({ email });
-  } catch (e) {
-    console.error(e);
+    const user = await this.usersCollection.findOne({ email });
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw new Error(`Error al obtener el usuario por correo electrónico: ${error.message}`);
   }
 }
 
+async getUserById(id) {
+  try {
+    if (!this.usersCollection) {
+      await this.connectToDatabase();
+    }
+    const user = await this.usersCollection.findOne({ _id: id });
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw new Error(`Error al obtener el usuario por id: ${error.message}`);
+  }
+}
 
 }
+
 
 
 module.exports = Database;

@@ -13,6 +13,9 @@ const db = new Database();
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const MongoStore = require('connect-mongo');
+const passport = require('passport');
+const bcrypt = require('bcrypt');
+
 
 // creo configuracion de mango para guardar sesiones
 
@@ -36,7 +39,43 @@ const OPENAI_API_KEY = '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';
 
 const database = new Database();
 
+// agrego passport
+app.use(passport.initialize());
+app.use(passport.session());
 
+// agrego passport local
+const LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+    { usernameField: 'email' }, // le digo que el campo de usuario es el email
+    async function (email, password, done) {
+        const user = await database.getUserByEmail(email);
+        if (!user) {
+            return done(null, false, { message: 'Incorrect email or password.' });
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return done(null, false, { message: 'Incorrect email or password.' });
+        }
+        return done(null, user);
+    }
+));
+
+//serializo el usuario y sederilizo el usuario
+passport.serializeUser((user, done) => {
+    done(null, user._id);
+});
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await database.getUserById();
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
+});
+
+//
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -114,5 +153,8 @@ io.on('connection', (socket) => {
 //         io.emit('chat message', botMessage, 'Bot');
 //     });
 // });
+
+
+
 
 
