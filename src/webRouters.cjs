@@ -65,7 +65,16 @@ webRouter.post('/login', async (req, res, next) => {
     })(req, res, next);
 });
 
+// agrego ruta para github
 
+webRouter.get('/login/github', passport.authenticate('github'));
+
+webRouter.get('/login/github/callback',
+    passport.authenticate('github'),
+    function (req, res) {
+        res.redirect('/products/db');
+    }
+);
 
 // agrego ruta para logout que si es admin destruye la sesion y si no es admin solo setea el email en null
 

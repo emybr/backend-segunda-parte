@@ -15,6 +15,8 @@ const FileStore = require('session-file-store')(session);
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
+const passportGithub = require('passport-github');
+
 
 
 // creo configuracion de mango para guardar sesiones
@@ -68,14 +70,36 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await database.getUserById();
+        const user = await database.getUserById(id);
         done(null, user);
     } catch (error) {
         done(error);
     }
 });
 
-//
+// agrego passport github
+
+const GitHubStrategy = require('passport-github').Strategy;
+
+passport.use(new GitHubStrategy({
+    clientID: 'Iv1.b77e98c047845c88',
+    clientSecret: 'aef39f4c432ce50e2d5cee5305d46fc3ade23ee1',
+    callbackURL: 'http://localhost:8080/login/github/callback'
+},
+    (accessToken, refreshToken, profile, done) => {
+        return done(null, profile);
+    }
+)
+);
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+    done(null, user);
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -133,26 +157,7 @@ io.on('connection', (socket) => {
 
 });
 
-//     socket.on('chat message', async (message, username) => {
-//         console.log(`${username}: ${message}`);
-//         // Guardar el mensaje en la base de datos
-//         await database.insertMessage(message, username);
-//         // Obtener la respuesta de Chat-GPT
-//         const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-002/completions', {
-//             prompt: message,
-//             max_tokens: 1000,
-//             temperature: 0.5
-//         }, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': 'Bearer ' +  OPENAI_API_KEY // Reemplaza OPENAI_API_KEY con tu clave de API de Chat-GPT
-//             }
-//         });
-//         const botMessage = response.data.choices[0].text;
-//         // Emitir el mensaje del bot a todos los clientes conectados
-//         io.emit('chat message', botMessage, 'Bot');
-//     });
-// });
+
 
 
 
