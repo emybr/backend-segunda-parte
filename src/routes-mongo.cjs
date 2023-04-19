@@ -88,16 +88,20 @@ router.post('/mongo/carts', async (req, res) => {
     res.send({ message: 'Carrito agregado' });
 });
 
-// ruta para agregar un producto al carrito
+// ruta para agregar un producto al carrito por id
 
-router.post('/mongo/carts/:id', async (req, res) => {
-    database.addProductToCart(req.params.id, req.body);
+// router.post('/mongo/carts/:id', async (req, res) => {
+//     database.addProductToCart(req.params.id, req.body);
+//     res.send({ message: 'Producto agregado al carrito' });
+// });
+
+// ruta para obtener un carrito por id y actualizo el cartId del usuario
+router.post('/mongo/carts/:email', async (req, res) => {
+    await database.addProductToCart(req.params.email, req.body);
+    await database.updateCartIdUser(req.params.email);
     res.send({ message: 'Producto agregado al carrito' });
-});
-
-
-
-
+  });
+  
 
 module.exports = router;
 

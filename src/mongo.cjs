@@ -115,27 +115,93 @@ class Database {
     }
   }
 
-  async addCart() {
+  // async addCart() {
+  //   try {
+  //     if (!this.cartsCollection) {
+  //       await this.connectToDatabase();
+  //     }
+  //     const result = await this.cartsCollection.insertOne({ products: [] });
+  //     return result;
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }
+
+
+
+    async addCart(email) {
     try {
       if (!this.cartsCollection) {
         await this.connectToDatabase();
       }
-      const result = await this.cartsCollection.insertOne({ products: [] });
+      const result = await this.cartsCollection.insertOne({ email, products: [] });
       return result;
     } catch (e) {
       console.error(e);
     }
   }
 
+  // esta opcion trabaja con el id del carrito
 
+  // async addProductToCart(cartId, product) {
+  //   console.log(product);
+  //   try {
+  //     if (!this.cartsCollection) {
+  //       await this.connectToDatabase();
+  //     }
+  //     const cart = await this.cartsCollection.findOne({ _id: cartId });
+  //     if (cart) {
+  //       const existingProduct = cart.products.find(p => p.id === product.id);
+  //       if (existingProduct) {
+  //         existingProduct.quantity++;
+  //       } else {
+  //         product.quantity = 1;
+  //         const cartProduct = {
+  //           id: product.id,
+  //           title: product.title,
+  //           description: product.description,
+  //           price: product.price,
+  //           thumbnail: product.thumbnail,
+  //           code: product.code,
+  //           stock: product.stock,
+  //           quantity: 1
+  //         };
+  //         cart.products.push(cartProduct);
+  //       }
+  //       await this.cartsCollection.updateOne({ _id: cartId }, { $set: { products: cart.products } });
+  //       console.log("Producto agregado al carrito");
+  //     } else {
+  //       await this.cartsCollection.insertOne({
+  //         _id: cartId,
+  //         timestamp: new Date(),
+  //         products: [{
+  //           id: product.id,
+  //           title: product.title,
+  //           description: product.description,
+  //           price: product.price,
+  //           thumbnail: product.thumbnail,
+  //           code: product.code,
+  //           stock: product.stock,
+  //           quantity: 1
+  //         }]
+  //       });
+  //       console.log("Carrito creado y producto agregado");
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }
   
-  async addProductToCart(cartId, product) {
+
+  // funciona bien trabaja con email
+
+  async addProductToCart(email, product) {
     console.log(product);
     try {
       if (!this.cartsCollection) {
         await this.connectToDatabase();
       }
-      const cart = await this.cartsCollection.findOne({ _id: cartId });
+      const cart = await this.cartsCollection.findOne({ email });
       if (cart) {
         const existingProduct = cart.products.find(p => p.id === product.id);
         if (existingProduct) {
@@ -154,11 +220,11 @@ class Database {
           };
           cart.products.push(cartProduct);
         }
-        await this.cartsCollection.updateOne({ _id: cartId }, { $set: { products: cart.products } });
+        await this.cartsCollection.updateOne({ email }, { $set: { products: cart.products } });
         console.log("Producto agregado al carrito");
       } else {
         await this.cartsCollection.insertOne({
-          _id: cartId,
+          email: email,
           timestamp: new Date(),
           products: [{
             id: product.id,
@@ -172,6 +238,24 @@ class Database {
           }]
         });
         console.log("Carrito creado y producto agregado");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+
+  async updateCartIdUser(email) {
+    try {
+      if (!this.cartsCollection || !this.usersCollection) {
+        await this.connectToDatabase();
+      }
+      const cart = await this.cartsCollection.findOne({ email });
+      if (cart) {
+        await this.usersCollection.updateOne({ email }, { $set: { cartId: cart._id } });
+        console.log("CartId actualizado para el usuario", email);
+      } else {
+        console.log("No se encontró un carrito para el usuario", email);
       }
     } catch (e) {
       console.error(e);
@@ -206,14 +290,14 @@ class Database {
 
   //estratejia de autenticacion
 
-  async createUser(nombre, apellido, edad, email, password) {
+  async createUser(nombre, apellido, edad, email, password,cartId) {
     try {
       if (!this.usersCollection) {
         await this.connectToDatabase();
       }
       const isAdmin = email === 'admin@example.com';
       const hashedPassword = await bcrypt.hash(password, 10);
-      await this.usersCollection.insertOne({ nombre, apellido, edad, email, password: hashedPassword, role: isAdmin ? 'admin' : 'user' });
+      await this.usersCollection.insertOne({ nombre, apellido, edad, email, password: hashedPassword, role: isAdmin ? 'admin' : 'user', cartId });
     }
     catch (e) {
       console.error(e);
@@ -283,7 +367,5 @@ async getUserById(id) {
 }
 
 }
-
-
 
 module.exports = Database;

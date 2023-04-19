@@ -30,8 +30,8 @@ webRouter.get('/register', async (req, res) => {
 //agrego ruta de registro con usuario admin y contraseña admin (12345)
 webRouter.post('/register', async (req, res) => {
     try {
-        const  { nombre, apellido, edad, email, password } = req.body;
-        await database.createUser(nombre, apellido, edad, email, password);
+        const  { nombre, apellido, edad, email, password,cartId } = req.body;
+        await database.createUser(nombre, apellido, edad, email, password,cartId);
         if (email === 'admin@example.com') {
             await database.setAdminRole(email);
         }
@@ -106,7 +106,7 @@ webRouter.get('/products/db', async (req, res) => {
         const totalProducts = await database.getTotalProducts({
             $text: { $search: query },
         });
-
+        const email = req.session.email;
         const totalPages = Math.ceil(totalProducts / limit);
         const hasPrevPage = page > 1;
         const hasNextPage = page < totalPages;
@@ -130,6 +130,7 @@ webRouter.get('/products/db', async (req, res) => {
             prevLink,
             nextLink,
             message: req.session.message,
+            email,
         });
     } catch (error) {
         res.status(500).send(error.message);
