@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { ProductManager } = require("./entrega3.cjs");
-const { Carts } = require("./carts/carts.cjs");
+const { ProductManager } = require("../dao/file/product-manager.cjs");
+const { Carts } = require("../dao/file/carts.cjs");
 
 const productManager = new ProductManager();
 productManager.loadProductsFromFile();

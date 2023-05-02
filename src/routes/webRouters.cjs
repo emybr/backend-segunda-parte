@@ -1,13 +1,17 @@
 const express = require('express');
-const { ProductManager } = require('./entrega3.cjs');
-const Database = require('./mongo.cjs');
+const { ProductManager } = require('../dao/file/product-manager.cjs');
 const bcrypt = require('bcrypt');
+const  ProductManagerDb  = require('../dao/mongo/product-manager-db.cjs');
+const UserManagerDb = require('../dao/mongo/user-manager-db.cjs');
+const CartsManagerDb = require('../dao/mongo/carts-manager.db.cjs');
 
 const productManager = new ProductManager();
-const database = new Database();
 const webRouter = express.Router();
 productManager.loadProductsFromFile();
 const passport = require('passport');
+const productManagerDb = new ProductManagerDb();
+const userManagerDb = new UserManagerDb();
+const cartsManagerDb = new CartsManagerDb();
 
 
 webRouter.get('/products', (req, res) => {
@@ -31,9 +35,9 @@ webRouter.get('/register', async (req, res) => {
 webRouter.post('/register', async (req, res) => {
     try {
         const  { nombre, apellido, edad, email, password,cartId } = req.body;
-        await database.createUser(nombre, apellido, edad, email, password,cartId);
+        await userManagerDb.createUser(nombre, apellido, edad, email, password,cartId);
         if (email === 'admin@example.com') {
-            await database.setAdminRole(email);
+            await userManagerDb.setAdminRole(email);
         }
         res.redirect('/login');
     } catch (error) {
@@ -101,9 +105,9 @@ webRouter.get('/products/db', async (req, res) => {
         const sort = req.query.sort;
         const query = req.query.query;
 
-        const products = await database.getProducts(limit, page, sort, query)
+        const products = await productManagerDb.getProducts(limit, page, sort, query)
 
-        const totalProducts = await database.getTotalProducts({
+        const totalProducts = await productManagerDb.getTotalProducts({
             $text: { $search: query },
         });
         const email = req.session.email;
@@ -141,7 +145,7 @@ webRouter.get('/products/db', async (req, res) => {
 
 webRouter.get('/carts/db/:cartId', async (req, res) => {
     try {
-        const cart = await database.getCartsById(req.params.cartId);
+        const cart = await cartsManagerDb.getCartsById(req.params.cartId);
 
         res.render('vistaCarrito', {
             cart

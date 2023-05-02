@@ -2,13 +2,15 @@ const express = require('express');
 const app = express();
 const port = 8080;
 const { engine } = require('express-handlebars');
-const routes = require('./routes.cjs');
-const { webRouter } = require('./webRouters.cjs');
+const routes = require('./routes/routes.cjs');
+const { webRouter } = require('./routes/webRouters.cjs');
 const httpServer = require('http').createServer(app);
 const { Server } = require('socket.io');
-const { ProductManager } = require('./entrega3.cjs');
-const mongoRoutes = require('./routes-mongo.cjs');
-const Database = require('./mongo.cjs');
+const mongoRoutes = require('./routes/routes-mongo.cjs');
+const Database = require (`./config/config.cjs`)
+const UserManagerDb = require('./dao/mongo/user-manager-db.cjs');
+const ChatManagerDB = require('./dao/mongo/chat-manager.db.cjs');
+const {ProductManager} = require('./dao/file/product-manager.cjs');
 const db = new Database();
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
@@ -40,6 +42,8 @@ const OPENAI_API_KEY = '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';
 
 
 const database = new Database();
+const  userManagerDb = new UserManagerDb();
+const chatManagerDb = new ChatManagerDB();
 
 // agrego passport
 app.use(passport.initialize());
@@ -51,7 +55,7 @@ const LocalStrategy = require('passport-local').Strategy;
 passport.use(new LocalStrategy(
     { usernameField: 'email' }, // le digo que el campo de usuario es el email
     async function (email, password, done) {
-        const user = await database.getUserByEmail(email);
+        const user = await userManagerDb.getUserByEmail(email);
         if (!user) {
             return done(null, false, { message: 'Incorrect email or password.' });
         }
@@ -70,7 +74,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await database.getUserById(id);
+        const user = await userManagerDb.getUserById(id);
         done(null, user);
     } catch (error) {
         done(error);
@@ -146,7 +150,7 @@ io.on('connection', (socket) => {
     socket.on('chat message', async (message, username) => {
         console.log(`${username}: ${message}`);
         // Guardar el mensaje en la base de datos
-        await database.insertMessage(message, username);
+        await chatManagerDb.insertMessage(message, username);
         // Emitir el mensaje a todos los clientes conectados
         io.emit('chat message', message, username);
     });
