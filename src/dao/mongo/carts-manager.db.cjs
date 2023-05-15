@@ -1,4 +1,4 @@
-const Database =  require('../../config/config.cjs');
+const Database = require('../../config/config.cjs');
 
 class CartsManagerDb {
     constructor() {
@@ -165,6 +165,21 @@ class CartsManagerDb {
         }
     }
 
+    async getCartsByEmail(email) {
+        try {
+            if (!this.db.cartsCollection) {
+                await this.db.connectToDatabase();
+            }
+            const cart = await this.db.cartsCollection.findOne({ email });
+            return cart;
+        } catch (error) {
+            console.error(error);
+            throw new Error('Error getting cart');
+        }
+    }
 }
+        
+
+
 
 module.exports = CartsManagerDb;

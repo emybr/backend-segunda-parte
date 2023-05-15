@@ -1,17 +1,21 @@
 const express = require('express');
 const { ProductManager } = require('../dao/file/product-manager.cjs');
 const bcrypt = require('bcrypt');
-const  ProductManagerDb  = require('../dao/mongo/product-manager-db.cjs');
+const ProductManagerDb = require('../dao/mongo/product-manager-db.cjs');
 const UserManagerDb = require('../dao/mongo/user-manager-db.cjs');
 const CartsManagerDb = require('../dao/mongo/carts-manager.db.cjs');
+const TicketManagerDb = require('../dao/mongo/ticket-manager.db.cjs');
 
 const productManager = new ProductManager();
 const webRouter = express.Router();
 productManager.loadProductsFromFile();
 const passport = require('passport');
+const { ensureAuthenticated } = require('../middleware/autenticacion.cjs');
+// const { default: Ticket } = require('../dao/mongo/Models/TicketManagerDb.cjs');
 const productManagerDb = new ProductManagerDb();
 const userManagerDb = new UserManagerDb();
 const cartsManagerDb = new CartsManagerDb();
+const ticketManagerDb = new TicketManagerDb();
 
 
 webRouter.get('/products', (req, res) => {
@@ -34,8 +38,8 @@ webRouter.get('/register', async (req, res) => {
 //agrego ruta de registro con usuario admin y contraseña admin (12345)
 webRouter.post('/register', async (req, res) => {
     try {
-        const  { nombre, apellido, edad, email, password,cartId } = req.body;
-        await userManagerDb.createUser(nombre, apellido, edad, email, password,cartId);
+        const { nombre, apellido, edad, email, password, cartId } = req.body;
+        await userManagerDb.createUser(nombre, apellido, edad, email, password, cartId);
         if (email === 'admin@example.com') {
             await userManagerDb.setAdminRole(email);
         }
@@ -143,15 +147,28 @@ webRouter.get('/products/db', async (req, res) => {
 
 // agrego ruta para ver carrito  carrito de mongo
 
-webRouter.get('/carts/db/:cartId', async (req, res) => {
+webRouter.get('/carts/:email',ensureAuthenticated, async (req, res) => {
     try {
-        const cart = await cartsManagerDb.getCartsById(req.params.cartId);
-
-        res.render('vistaCarrito', {
-            cart
-        });
+        const { email } = req.params;
+        const carts = await cartsManagerDb.getCartsByEmail(email);
+        const total = carts.products.reduce((acc, curr) => acc + parseInt(curr.price), 0);
+        res.render('vistaCarrito', { carts, email, total });
+        console.log(carts);
     } catch (error) {
         res.status(500).send(error.message);
+    }
+});
+
+// agrego ruta post para generar Ticket
+
+webRouter.post('/mongo/tickets', async (req, res) => {
+    const { amount, purchaser } = req.body;
+    try {
+        const result = await ticketManagerDb.createTicket(amount, purchaser);
+        res.send({ message: 'Ticket creado exitosamente', data: result });
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ message: 'Hubo un error al crear el ticket' });
     }
 });
 

@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 
+
 class Database {
     constructor() {
         this.uri = "mongodb+srv://emybr82ar:92713@cluster0.apsr9qa.mongodb.net/?retryWrites=true&w=majority";
@@ -14,6 +15,7 @@ class Database {
             this.messagesCollection = this.client.db("messages").collection("messages");
             this.cartsCollection = this.client.db("carts").collection("carts");
             this.usersCollection = this.client.db("users").collection("users");
+            this.ordersCollection = this.client.db("ticket").collection("tickets");
         } catch (e) {
             console.error(e);
         }

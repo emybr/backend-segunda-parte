@@ -4,18 +4,27 @@
     <title>Carrito</title>
 </head>
 <body>
+
     <h1>Detalles del carrito:</h1>
-    <p><strong>ID del carrito:</strong> {{cart._id}}</p>
-    <p><strong>Fecha de creación:</strong> {{cart.timestamp}}</p>
+    <p><strong>Email:</strong> {{carts.email}}</p>
+    <p><strong>ID del carrito:</strong> {{carts._id}}</p>
+    <p><strong>Fecha de creación:</strong> {{carts.timestamp}}</p>
     <p><strong>Productos:</strong></p>
     <ul>
-        {{#each cart.products}}
-            <li>id: {{id}}</li>
-            <li>title: {{title}}</li>
-            <li>description: {{description}}</li>
-            <li>price: {{price}}</li>
-            <li>thumbnail: {{thumbnail}}</li>
+        {{#each carts.products}}
+            <li>id:{{this.id}}</li>
+            <li>title: {{this.title}}</li>
+            <li>description: {{this.this.description}}</li>
+            <li>price: {{this.price}}</li>
+            <li>thumbnail: {{this.thumbnail}}</li>
         {{/each}}
-    </ul>
+        </ul>
+        <P><strong>total:</strong> {{total}}</P>
+
+        <form action="/mongo/tickets" method="POST">
+    <input type="hidden" name="amount" value="{{total}}">
+    <input type="hidden" name="purchaser" value="{{carts.email}}">
+    <button type="submit">Finalizar compra</button>
+</form>
 </body>
 </html>
