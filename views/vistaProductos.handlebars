@@ -20,6 +20,8 @@
       <p>Title:{{this.title}}</p>
       <p>Description:{{this.description}}</p>
       <p>Precio: {{this.price}}</p>
+      <p>Thumbnail: {{this.thumbnail}}</p>
+      <p>Stock: {{this.stock}}</p>
       <form action="/db/mongo/carts/{{../email}}" method="POST">
         <input type="hidden" name="id" value="{{this.id}}">
         <input type="hidden" name="title" value="{{this.title}}">
@@ -27,6 +29,7 @@
         <input type="hidden" name="price" value="{{this.price}}">
         <input type="hidden" name="thumbnail" value="{{this.thumbnail}}">
         <input type="hidden" name="email" value="{{../email}}">
+        <input type="hidden" name="stock" value="{{this.stock}}">
         <button type="submit">Agregar al carrito</button>
       </form>
     </li>

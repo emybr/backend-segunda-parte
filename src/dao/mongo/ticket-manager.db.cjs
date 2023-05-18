@@ -8,7 +8,7 @@ class TicketManagerDb {
         this.db = new Database();
     }
 
-    async createTicket(amount, purchaser) {
+    async createTicket(amount, purchaser, email) {
         try {
             if (!this.db.ordersCollection) {
                 await this.db.connectToDatabase();
@@ -18,6 +18,7 @@ class TicketManagerDb {
                 amount,
                 purchaser,
                 purchase_datetime: new Date(),
+                email,
             });
             const result = await this.db.ordersCollection.insertOne(ticket);
             return result;
@@ -25,8 +26,27 @@ class TicketManagerDb {
             console.error(e);
         }
     }
+
+
+
+
+
+    // agreggo nue metodo para obtener todos los tickets
+
+    async createOrderItem(orderItem) {
+        try {
+            if (!this.db.database) {
+                await this.db.connectToDatabase();
+            }
+            const result = await this.db.database.insertOne(orderItem);
+            return result;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
 }
-    
 
 
-    module.exports = TicketManagerDb;
+
+module.exports = TicketManagerDb;

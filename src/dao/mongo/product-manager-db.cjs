@@ -80,7 +80,51 @@ class ProductManagerDb {
             console.error(e);
         }
     }
-    
+
+
+    async getAllProducts() {
+        try {
+            if (!this.db.database) {
+                await this.db.connectToDatabase();
+            }
+            const products = await this.db.database.find({}).toArray();
+            return products;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+
+    async getProductById(id) {
+        try {
+            if (!this.db.database) {
+                await this.db.connectToDatabase();
+            }
+            const product = await this.db.database.findOne({ id: id });
+            return product;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async updateProductStock(productId, quantity) {
+        console.log(productId, quantity);
+        try {
+            if (!this.db.database) {
+                await this.db.connectToDatabase();
+            }
+            const product = await this.db.database.findOne({ id: productId });
+            if (!product) {
+                throw new Error(`Producto con ID ${productId} no encontrado`);
+            }
+            product.stock -= quantity;
+            await this.db.database.replaceOne({ id: productId }, product);
+        } catch (e) {
+            console.error(e);
+            throw new Error(`Error al actualizar el stock del producto: ${e.message}`);
+        }
+    }
+
 }
 
 module.exports = ProductManagerDb;

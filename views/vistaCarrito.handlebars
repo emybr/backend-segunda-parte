@@ -14,17 +14,29 @@
         {{#each carts.products}}
             <li>id:{{this.id}}</li>
             <li>title: {{this.title}}</li>
-            <li>description: {{this.this.description}}</li>
+            <li>description: {{this.description}}</li>
             <li>price: {{this.price}}</li>
             <li>thumbnail: {{this.thumbnail}}</li>
+            <li>stock: {{this.stock}}</li>
         {{/each}}
         </ul>
         <P><strong>total:</strong> {{total}}</P>
 
-        <form action="/mongo/tickets" method="POST">
+
+<form action="/mongo/tickets" method="POST">
     <input type="hidden" name="amount" value="{{total}}">
     <input type="hidden" name="purchaser" value="{{carts.email}}">
+    <input type="hidden" name="email" value="{{carts.email}}">
+    <input type="hidden" name="cartId" value="{{carts._id}}">
+    {{#each carts.products}}
+        {{#if this.id}}
+        
+            <input type="hidden" name="productIds" value="{{this.id}}">
+            <input type="hidden" name="stock" value="{{this.stock}}">
+        {{/if}}
+    {{/each}}
     <button type="submit">Finalizar compra</button>
 </form>
+
 </body>
 </html>

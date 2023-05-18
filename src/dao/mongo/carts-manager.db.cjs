@@ -18,58 +18,6 @@ class CartsManagerDb {
         }
     }
 
-    // esta opcion trabaja con el id del carrito
-
-    // async addProductToCart(cartId, product) {
-    //   console.log(product);
-    //   try {
-    //     if (!this.cartsCollection) {
-    //       await this.connectToDatabase();
-    //     }
-    //     const cart = await this.cartsCollection.findOne({ _id: cartId });
-    //     if (cart) {
-    //       const existingProduct = cart.products.find(p => p.id === product.id);
-    //       if (existingProduct) {
-    //         existingProduct.quantity++;
-    //       } else {
-    //         product.quantity = 1;
-    //         const cartProduct = {
-    //           id: product.id,
-    //           title: product.title,
-    //           description: product.description,
-    //           price: product.price,
-    //           thumbnail: product.thumbnail,
-    //           code: product.code,
-    //           stock: product.stock,
-    //           quantity: 1
-    //         };
-    //         cart.products.push(cartProduct);
-    //       }
-    //       await this.cartsCollection.updateOne({ _id: cartId }, { $set: { products: cart.products } });
-    //       console.log("Producto agregado al carrito");
-    //     } else {
-    //       await this.cartsCollection.insertOne({
-    //         _id: cartId,
-    //         timestamp: new Date(),
-    //         products: [{
-    //           id: product.id,
-    //           title: product.title,
-    //           description: product.description,
-    //           price: product.price,
-    //           thumbnail: product.thumbnail,
-    //           code: product.code,
-    //           stock: product.stock,
-    //           quantity: 1
-    //         }]
-    //       });
-    //       console.log("Carrito creado y producto agregado");
-    //     }
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // }
-
-
     // funciona bien trabaja con email
 
     async addProductToCart(email, product) {
@@ -177,9 +125,49 @@ class CartsManagerDb {
             throw new Error('Error getting cart');
         }
     }
+    
+    // Actualizar el carrito del usuario después de la compra
+
+    async updateCartAfterPurchase(email, purchasedProductIds) {
+        try {
+            if (!this.db.cartsCollection) {
+                await this.db.connectToDatabase();
+            }
+            const cart = await this.db.cartsCollection.findOne({ email });
+            if (!cart) {
+                throw new Error(`Cart with ID ${email} not found`);
+            }
+            const updatedProducts = cart.products.filter(p => !purchasedProductIds.includes(p.id));
+            await this.db.cartsCollection.updateOne({ email }, { $set: { products: updatedProducts } });
+        } catch (error) {
+            console.error(error);
+            throw new Error('Error updating cart after purchase');
+        }
+    }
+
+//   Agrego nuevo método para obtener todos los carritos
+
+async removeCartItem(email, productId) {
+    try {
+        if (!this.db.cartsCollection) {
+            await this.db.connectToDatabase();
+        }
+        const result = await this.db.cartsCollection.updateOne(
+            { email: email },
+            { $pull: { products: { id: productId } } }
+        );
+        return result;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+
+
+
 }
         
-
+   
 
 
 module.exports = CartsManagerDb;

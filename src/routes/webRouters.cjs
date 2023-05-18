@@ -6,6 +6,7 @@ const UserManagerDb = require('../dao/mongo/user-manager-db.cjs');
 const CartsManagerDb = require('../dao/mongo/carts-manager.db.cjs');
 const TicketManagerDb = require('../dao/mongo/ticket-manager.db.cjs');
 
+
 const productManager = new ProductManager();
 const webRouter = express.Router();
 productManager.loadProductsFromFile();
@@ -147,7 +148,7 @@ webRouter.get('/products/db', async (req, res) => {
 
 // agrego ruta para ver carrito  carrito de mongo
 
-webRouter.get('/carts/:email',ensureAuthenticated, async (req, res) => {
+webRouter.get('/carts/:email', ensureAuthenticated, async (req, res) => {
     try {
         const { email } = req.params;
         const carts = await cartsManagerDb.getCartsByEmail(email);
@@ -159,18 +160,55 @@ webRouter.get('/carts/:email',ensureAuthenticated, async (req, res) => {
     }
 });
 
-// agrego ruta post para generar Ticket
+// agrego ruta para generar ticket de mongo
 
 webRouter.post('/mongo/tickets', async (req, res) => {
-    const { amount, purchaser } = req.body;
+    const { amount, purchaser, email } = req.body;
+    const carts = await cartsManagerDb.getCartsByEmail(email);
+    console.log(carts);
+    const productIds = carts.products.map(product => product.id);
+    let flag = true;
     try {
-        const result = await ticketManagerDb.createTicket(amount, purchaser);
-        res.send({ message: 'Ticket creado exitosamente', data: result });
+        for (var i = 0; i < productIds.length; i++) {
+            const product = await productManagerDb.getProductById(parseInt(productIds[i]));
+            console.log(product);
+            const quantity = carts.products[i].quantity; // Obtener la cantidad de productos en el carrito
+            if (product.stock < quantity) {
+                flag = false;
+                console.log('No hay stock suficiente');
+                break;
+            } else {
+                console.log('Hay stock suficiente');
+            }
+        }
+    
+        if (flag === true) {
+            // Si todos los productos tienen suficiente stock, restar el stock y generar el ticket
+            await Promise.all(productIds.map((productId, i) => productManagerDb.updateProductStock(parseInt(productId), carts.products[i].quantity)));
+            const result = await ticketManagerDb.createTicket(amount, purchaser, email);
+            // Eliminar los productos comprados del carrito
+            for (var i = 0; i < productIds.length; i++) {
+                await cartsManagerDb.removeCartItem(email, productIds[i]);
+            }
+            res.send({ message: 'Ticket creado exitosamente', data: result });
+        } else {
+            // Si hay productos sin stock suficiente, devolver los IDs de los productos no procesados
+            res.send({
+                message: 'No se pudieron procesar todos los productos',
+                data: { unprocessedProductIds: productIds },
+            });
+        }
     } catch (e) {
         console.error(e);
         res.status(500).send({ message: 'Hubo un error al crear el ticket' });
     }
 });
+
+
+
+
+
+
 
 module.exports = { webRouter };
 
