@@ -3,9 +3,10 @@ const router = express.Router();
 const { ProductManager } = require("../dao/file/product-manager.cjs");
 const { Carts } = require("../dao/file/carts.cjs");
 const { mensajes, errores } = require('../errores/errores.cjs');
-
+const { generateProducts } = require('../middleware/productsFaker.cjs');
 const productManager = new ProductManager();
 productManager.loadProductsFromFile();
+
 
 const carts = new Carts();
 router.use(express.json());
@@ -50,6 +51,14 @@ router.delete('/products/delete/:pid', (req, res) => {
     productManager.saveProducts();
     res.send({ message: 'Producto eliminado' });
 });
+
+// creo ruta para obtener todos los productos de faker
+
+router.get('/mockingproducts', (req, res) => {
+    const products = generateProducts();
+    res.send(products);
+});
+
 
 // -------------------------------------------------------------------
 
