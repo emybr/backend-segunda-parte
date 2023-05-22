@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { ProductManager } = require("../dao/file/product-manager.cjs");
 const { Carts } = require("../dao/file/carts.cjs");
+const { mensajes, errores } = require('../errores/errores.cjs');
 
 const productManager = new ProductManager();
 productManager.loadProductsFromFile();
@@ -14,7 +15,7 @@ router.get('/products/:pid', (req, res) => {
     if (product) {
         res.send(product);
     } else {
-        res.status(404).send('Producto no encontrado');
+        res.status(404).send(mensajes.ERROR_PRODUCTO);
     }
 });
 
@@ -73,7 +74,7 @@ router.get('/carts/:cid', (req, res) => {
     if (cart) {
         res.send(cart);
     } else {
-        res.status(404).send('Carrito no encontrado');
+        res.status(404).send(mensajes.ERROR_PRODUCTO);
     }
 });
 

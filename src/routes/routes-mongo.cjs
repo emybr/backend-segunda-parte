@@ -7,6 +7,7 @@ const CartsManagerDb = require('../dao/mongo/carts-manager.db.cjs');
 
 const productManagerDb = new ProductManagerDb();
 const cartsManagerDb = new CartsManagerDb();
+const { mensajes, errores } = require('../errores/errores.cjs');
 
 
 // Ruta para agregar un nuevo producto
@@ -17,7 +18,7 @@ router.post('/mongo/products/addproduts', async (req, res) => {
         const result = await productManagerDb.createProduct(id,title, description, price, thumbnail, code, stock);
         res.json(result);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(mensajes.ERROR_NEW_PRODUCTO);
     }
 });
 
@@ -52,7 +53,7 @@ router.get('/mongo/products', async (req, res) => {
             nextLink,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(mensajes.ERROR_PRODUCTO);
     }
 });
 
@@ -66,7 +67,7 @@ router.put('/mongo/products/:id', async (req, res) => {
         const result = await productManagerDb.updateProduct(id, name, price);
         res.json(result);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(mensajes.ERROR_ACTUALIZAR_PRODUCTO);
     }
 });
 
@@ -77,7 +78,7 @@ router.delete('/mongo/products/:id', async (req, res) => {
         const result = await productManagerDb.deleteProduct(id);
         res.json(result);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(mensajes.ERROR_ELIMINAR_PRODUCTO);
     }
 });
 

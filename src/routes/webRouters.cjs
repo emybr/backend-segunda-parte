@@ -17,6 +17,7 @@ const productManagerDb = new ProductManagerDb();
 const userManagerDb = new UserManagerDb();
 const cartsManagerDb = new CartsManagerDb();
 const ticketManagerDb = new TicketManagerDb();
+const { mensajes, errores } = require('../errores/errores.cjs');
 
 
 webRouter.get('/products', (req, res) => {
@@ -46,7 +47,7 @@ webRouter.post('/register', async (req, res) => {
         }
         res.redirect('/login');
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(errores.ERROR_ADMIN);
     }
 });
 
@@ -142,7 +143,7 @@ webRouter.get('/products/db', async (req, res) => {
             email,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(mensajes.ERROR_PRODUCTO);
     }
 });
 
@@ -156,7 +157,7 @@ webRouter.get('/carts/:email', ensureAuthenticated, async (req, res) => {
         res.render('vistaCarrito', { carts, email, total });
         console.log(carts);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(mensajes.ERROR_CARRITO);
     }
 });
 
@@ -175,10 +176,7 @@ webRouter.post('/mongo/tickets', async (req, res) => {
             const quantity = carts.products[i].quantity; // Obtener la cantidad de productos en el carrito
             if (product.stock < quantity) {
                 flag = false;
-                console.log('No hay stock suficiente');
-                break;
-            } else {
-                console.log('Hay stock suficiente');
+                throw new Error(mensajes.ERROR_CARRITO_STOCK);
             }
         }
     
@@ -194,13 +192,13 @@ webRouter.post('/mongo/tickets', async (req, res) => {
         } else {
             // Si hay productos sin stock suficiente, devolver los IDs de los productos no procesados
             res.send({
-                message: 'No se pudieron procesar todos los productos',
+                message: mensajes.ERROR_PRODUCTO_STOCK,
                 data: { unprocessedProductIds: productIds },
             });
         }
     } catch (e) {
         console.error(e);
-        res.status(500).send({ message: 'Hubo un error al crear el ticket' });
+        res.status(500).send({ message:mensajes.ERROR_CARRITO_STOCK });
     }
 });
 

@@ -1,3 +1,4 @@
+
 const express = require('express');
 const app = express();
 const port = 8080;
@@ -18,8 +19,7 @@ const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const passportGithub = require('passport-github');
-
-
+const { mensajes, errores } = require('./errores/errores.cjs');
 
 // creo configuracion de mango para guardar sesiones
 
@@ -57,11 +57,11 @@ passport.use(new LocalStrategy(
     async function (email, password, done) {
         const user = await userManagerDb.getUserByEmail(email);
         if (!user) {
-            return done(null, false, { message: 'Incorrect email or password.' });
+            return done(null, false, { message:mensajes[errores.ERROR_LOGIN] });
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return done(null, false, { message: 'Incorrect email or password.' });
+            return done(null, false, { message: mensajes[errores.ERROR_LOGIN] });
         }
         return done(null, user);
     }
