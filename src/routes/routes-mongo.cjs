@@ -8,6 +8,7 @@ const CartsManagerDb = require('../dao/mongo/carts-manager.db.cjs');
 const productManagerDb = new ProductManagerDb();
 const cartsManagerDb = new CartsManagerDb();
 const { mensajes, errores } = require('../errores/errores.cjs');
+const { winstonLogger } = require('../middleware/logger.cjs');
 
 
 // Ruta para agregar un nuevo producto
@@ -18,7 +19,8 @@ router.post('/mongo/products/addproduts', async (req, res) => {
         const result = await productManagerDb.createProduct(id,title, description, price, thumbnail, code, stock);
         res.json(result);
     } catch (error) {
-        res.status(500).send(mensajes.ERROR_NEW_PRODUCTO);
+        // res.status(500).send(mensajes.ERROR_NEW_PRODUCTO);
+        winstonLogger.info('Error al agregar el producto');
     }
 });
 
@@ -53,7 +55,8 @@ router.get('/mongo/products', async (req, res) => {
             nextLink,
         });
     } catch (error) {
-        res.status(500).send(mensajes.ERROR_PRODUCTO);
+        // res.status(500).send(mensajes.ERROR_PRODUCTO);
+        winstonLogger.info('El producto no existe');
     }
 });
 
@@ -67,7 +70,8 @@ router.put('/mongo/products/:id', async (req, res) => {
         const result = await productManagerDb.updateProduct(id, name, price);
         res.json(result);
     } catch (error) {
-        res.status(500).send(mensajes.ERROR_ACTUALIZAR_PRODUCTO);
+        // res.status(500).send(mensajes.ERROR_ACTUALIZAR_PRODUCTO);
+        winstonLogger.info('Error al actualizar el producto');
     }
 });
 
@@ -78,7 +82,8 @@ router.delete('/mongo/products/:id', async (req, res) => {
         const result = await productManagerDb.deleteProduct(id);
         res.json(result);
     } catch (error) {
-        res.status(500).send(mensajes.ERROR_ELIMINAR_PRODUCTO);
+        // res.status(500).send(mensajes.ERROR_ELIMINAR_PRODUCTO);
+        winstonLogger.info('Error al eliminar el producto');
     }
 });
 
@@ -95,6 +100,7 @@ router.post('/mongo/carts/:email', async (req, res) => {
     await cartsManagerDb.addProductToCart(req.params.email, req.body);
     await cartsManagerDb.updateCartIdUser(req.params.email);
     res.send({ message: 'Producto agregado al carrito' });
+    winstonLogger.debug('Producto agregado al carrito');
 });
 
 

@@ -1,3 +1,4 @@
+const   winstonLogger = require('./middleware/logger.cjs');
 
 const express = require('express');
 const app = express();
@@ -36,6 +37,10 @@ app.use(session({
     store: store
 }));
 
+// // Agrego Logger
+// app.use((req, res, next) => {
+//     req['logger'] = winstonLogger;
+// });
 
 const axios = require('axios');
 const OPENAI_API_KEY = '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';
@@ -117,6 +122,8 @@ app.use(express.static('../public'));
 app.use('/db', mongoRoutes);
 app.use('/api', routes);
 app.use('/', webRouter);
+
+
 
 httpServer.listen(port, async () => {
     console.log(`Servidor corriendo en el puerto ${port}`);

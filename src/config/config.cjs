@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb');
+const { winstonLogger } = require('../middleware/logger.cjs');
 
 
 class Database {
@@ -17,7 +18,8 @@ class Database {
             this.usersCollection = this.client.db("users").collection("users");
             this.ordersCollection = this.client.db("ticket").collection("tickets");
         } catch (e) {
-            console.error(e);
+            // console.error(e);
+            winstonLogger.error('Error al conectar a la base de datos');
         }
     }
 

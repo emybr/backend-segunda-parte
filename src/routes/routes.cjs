@@ -4,6 +4,7 @@ const { ProductManager } = require("../dao/file/product-manager.cjs");
 const { Carts } = require("../dao/file/carts.cjs");
 const { mensajes, errores } = require('../errores/errores.cjs');
 const { generateProducts } = require('../middleware/productsFaker.cjs');
+const { winstonLogger } = require('../middleware/logger.cjs');
 const productManager = new ProductManager();
 productManager.loadProductsFromFile();
 
@@ -16,7 +17,8 @@ router.get('/products/:pid', (req, res) => {
     if (product) {
         res.send(product);
     } else {
-        res.status(404).send(mensajes.ERROR_PRODUCTO);
+        // res.status(404).send(mensajes.ERROR_PRODUCTO);
+        winstonLogger.http('El producto no existe');
     }
 });
 
@@ -83,7 +85,8 @@ router.get('/carts/:cid', (req, res) => {
     if (cart) {
         res.send(cart);
     } else {
-        res.status(404).send(mensajes.ERROR_PRODUCTO);
+        // res.status(404).send(mensajes.ERROR_PRODUCTO);
+        winstonLogger.http('El carrito no existe');
     }
 });
 

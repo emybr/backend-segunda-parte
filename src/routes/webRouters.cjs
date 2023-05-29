@@ -18,6 +18,7 @@ const userManagerDb = new UserManagerDb();
 const cartsManagerDb = new CartsManagerDb();
 const ticketManagerDb = new TicketManagerDb();
 const { mensajes, errores } = require('../errores/errores.cjs');
+const { winstonLogger } = require('../middleware/logger.cjs');
 
 
 webRouter.get('/products', (req, res) => {
@@ -47,7 +48,8 @@ webRouter.post('/register', async (req, res) => {
         }
         res.redirect('/login');
     } catch (error) {
-        res.status(500).send(errores.ERROR_ADMIN);
+        // res.status(500).send(errores.ERROR_ADMIN);
+        winstonLogger.http('El usuario no es administrador');
     }
 });
 
@@ -143,7 +145,8 @@ webRouter.get('/products/db', async (req, res) => {
             email,
         });
     } catch (error) {
-        res.status(500).send(mensajes.ERROR_PRODUCTO);
+        // res.status(500).send(mensajes.ERROR_PRODUCTO);
+        winstonLogger.http('El producto no existe');
     }
 });
 
@@ -157,7 +160,8 @@ webRouter.get('/carts/:email', ensureAuthenticated, async (req, res) => {
         res.render('vistaCarrito', { carts, email, total });
         console.log(carts);
     } catch (error) {
-        res.status(500).send(mensajes.ERROR_CARRITO);
+        // res.status(500).send(mensajes.ERROR_CARRITO);
+        winstonLogger.http('Carrito no encontrado');
     }
 });
 
@@ -198,7 +202,8 @@ webRouter.post('/mongo/tickets', async (req, res) => {
         }
     } catch (e) {
         console.error(e);
-        res.status(500).send({ message:mensajes.ERROR_CARRITO_STOCK });
+        // res.status(500).send({ message:mensajes.ERROR_CARRITO_STOCK });
+        winstonLogger.http('No hay stock suficiente');
     }
 });
 
