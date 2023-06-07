@@ -7,6 +7,7 @@ const CartsManagerDb = require('../dao/mongo/carts-manager.db.cjs');
 const TicketManagerDb = require('../dao/mongo/ticket-manager.db.cjs');
 
 
+
 const productManager = new ProductManager();
 const webRouter = express.Router();
 productManager.loadProductsFromFile();
@@ -99,6 +100,48 @@ webRouter.post('/logout', async (req, res) => {
     res.redirect('/login');
 });
 
+webRouter.get('/generate-reset-link', async (req, res) => {
+    res.render('generateResetLink');
+});
+
+
+webRouter.get('/reset/:token', async (req, res) => {
+    const token = req.params.token;
+    res.render('resetUserPassword', { token });
+});
+
+
+
+// agrego ruta para resetear contraseña
+
+webRouter.post(`/reset-password`, async (req, res) => {
+    const { email } = req.body;
+    await userManagerDb.actualizarContraseña(email);
+    res.send(`Se ha enviado un email a ${email} para resetear la contraseña`);
+});
+
+
+
+webRouter.post('/reset/token', async (req, res) => {
+    const token = req.body.token;
+    const newPassword = req.body.newPassword;
+    try {
+        // Buscar el documento correspondiente al token en la colección "passwordResetTokens"
+        const passwordResetToken = await userManagerDb.getPasswordResetToken(token);
+        if (!passwordResetToken) {
+            res.redirect('/generate-reset-link');
+        } else {
+            if (newPassword === passwordResetToken.password) {
+                res.send('La contraseña no puede ser igual a la anterior');
+            } else {
+                await userManagerDb.updatePassword(passwordResetToken.email, newPassword);
+                res.send('Contraseña actualizada correctamente');
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
 
 webRouter.get('/chat', async (req, res) => {
     res.render('chat');
@@ -183,7 +226,7 @@ webRouter.post('/mongo/tickets', async (req, res) => {
                 throw new Error(mensajes.ERROR_CARRITO_STOCK);
             }
         }
-    
+
         if (flag === true) {
             // Si todos los productos tienen suficiente stock, restar el stock y generar el ticket
             await Promise.all(productIds.map((productId, i) => productManagerDb.updateProductStock(parseInt(productId), carts.products[i].quantity)));
@@ -206,11 +249,6 @@ webRouter.post('/mongo/tickets', async (req, res) => {
         winstonLogger.http('No hay stock suficiente');
     }
 });
-
-
-
-
-
 
 
 module.exports = { webRouter };

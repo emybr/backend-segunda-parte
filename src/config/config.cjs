@@ -17,6 +17,7 @@ class Database {
             this.cartsCollection = this.client.db("carts").collection("carts");
             this.usersCollection = this.client.db("users").collection("users");
             this.ordersCollection = this.client.db("ticket").collection("tickets");
+            this.passwordResetTokensCollection = this.client.db("passwordResetTokens").collection("passwordResetTokens");
         } catch (e) {
             // console.error(e);
             winstonLogger.error('Error al conectar a la base de datos');

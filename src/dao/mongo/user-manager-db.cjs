@@ -1,4 +1,9 @@
+const { connect } = require('mongoose');
 const Database = require('../../config/config.cjs');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const { sendEmail } = require('../../service/email.service.cjs');
+
 
 
 class UserManagerDb {
@@ -79,6 +84,59 @@ class UserManagerDb {
         } catch (error) {
             console.error(error);
             throw new Error(`Error al obtener el usuario por id: ${error.message}`);
+        }
+    }
+
+
+  
+    async actualizarContraseña(email) {
+        const token = crypto.randomBytes(20).toString('hex');
+        const createdAt = Date.now();
+        const expires = new Date(Date.now() + 60 + 60 + 1000); // 1 hour
+
+        try {
+            if (!this.db.usersCollection) {
+                await this.db.connectToDatabase();
+            }
+
+            await this.db.passwordResetTokensCollection.insertOne({ email, token, createdAt, expires });
+
+            // Envío de correo con el token
+            const resetUrl = `http://localhost:8080/reset/${token}`;
+            const subject = 'Link para resetear la contraseña';
+            const text = `Para resetear la contraseña haga click en el siguiente link: ${resetUrl}`;
+
+            await sendEmail(email, subject, text);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+async updatePassword(email, newPassword) {
+    console.log(newPassword, 'newPassword');
+    try {
+        if (!this.db.usersCollection) {
+            await this.db.connectToDatabase();
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10); // Generar el hash de la nueva contraseña sin utilizar un salt
+        await this.db.usersCollection.updateOne({ email }, { $set: { password: hashedPassword }});
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+    
+    async getPasswordResetToken(token) {
+        try {
+            if (!this.db.passwordResetTokensCollection) {
+                await this.db.connectToDatabase();
+            }
+            const passwordResetToken = await this.db.passwordResetTokensCollection.findOne({ token });
+            return passwordResetToken;
+        } catch (error) {
+            console.error(error);
         }
     }
 
