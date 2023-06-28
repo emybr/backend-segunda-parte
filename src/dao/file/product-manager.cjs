@@ -68,6 +68,7 @@ class ProductManager  {
     // Carga los productos desde un archivo JSON
     loadProductsFromFile() {
         // Lee los datos del archivo JSON
+        // let productsData = fs.readFileSync("./products.json", "utf-8");
         let productsData = fs.readFileSync("./products.json", "utf-8");
         // Convierte los datos en un objeto JavaScript
         let products = JSON.parse(productsData);
@@ -107,29 +108,29 @@ class ProductManager  {
 
 // agregar productos al archivo json
 
-const productManager = new ProductManager();
-productManager.loadProductsFromFile();
+// const productManager = new ProductManager();
+// productManager.loadProductsFromFile();
 
-productManager.addProduct("Producto 1", "Descripción del producto 1", 500, "https://via.placeholder.com/150", "123456", 50);
+// productManager.addProduct("Producto 1", "Descripción del producto 1", 500, "https://via.placeholder.com/150", "123456", 50);
 
-console.log(productManager.getProducts());
-productManager.saveProducts();
+// console.log(productManager.getProducts());
+// productManager.saveProducts();
 
-// Elimina un producto
+// // Elimina un producto
 
-productManager.deleteProduct(5);
-console.log(productManager.getProducts());
-productManager.saveProducts();
+// productManager.deleteProduct(5);
+// console.log(productManager.getProducts());
+// productManager.saveProducts();
 
-// Actualiza un producto
+// // Actualiza un producto
 
-productManager.updateProduc(1, "Producto 1 actualizado 2", "Descripción del producto 1 actualizada de nuevo 2", 600, "https://via.placeholder.com/150", "123460", 60);
-console.log(productManager.getProducts());
-productManager.saveProducts();
+// productManager.updateProduc(1, "Producto 1 actualizado 2", "Descripción del producto 1 actualizada de nuevo 2", 600, "https://via.placeholder.com/150", "123460", 60);
+// console.log(productManager.getProducts());
+// productManager.saveProducts();
 
-// buscco un producto por su id
+// // buscco un producto por su id
 
-console.log(productManager.getProductById(1));
+// console.log(productManager.getProductById(1));
 
 
 module.exports.ProductManager = ProductManager;

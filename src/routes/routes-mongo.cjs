@@ -17,7 +17,7 @@ router.post('/mongo/products/addproduts', async (req, res) => {
     try {
         const { id,title, description, price, thumbnail, code, stock } = req.body;
         const result = await productManagerDb.createProduct(id,title, description, price, thumbnail, code, stock);
-        res.json(result);
+        res.status(200).json(result);
     } catch (error) {
         // res.status(500).send(mensajes.ERROR_NEW_PRODUCTO);
         winstonLogger.info('Error al agregar el producto');
@@ -65,12 +65,12 @@ router.get('/mongo/products', async (req, res) => {
 // Ruta para actualizar un producto existente
 router.put('/mongo/products/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-        const { name, price } = req.body;
-        const result = await productManagerDb.updateProduct(id, name, price);
-        res.json(result);
+        const id = parseInt (req.params.id);
+        const { title, price } = req.body;
+        const result = await productManagerDb.updateProduct(id, title, price);
+        res.status(200).json(result);
     } catch (error) {
-        // res.status(500).send(mensajes.ERROR_ACTUALIZAR_PRODUCTO);
+        res.status(500).send(mensajes.ERROR_ACTUALIZAR_PRODUCTO);
         winstonLogger.info('Error al actualizar el producto');
     }
 });
@@ -79,8 +79,10 @@ router.put('/mongo/products/:id', async (req, res) => {
 router.delete('/mongo/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await productManagerDb.deleteProduct(id);
-        res.json(result);
+        console.log(id);
+        const numericId = parseInt(id);
+        const result = await productManagerDb.deleteProduct(numericId);
+        res.status(200).json(result);
     } catch (error) {
         // res.status(500).send(mensajes.ERROR_ELIMINAR_PRODUCTO);
         winstonLogger.info('Error al eliminar el producto');

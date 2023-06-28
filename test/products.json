@@ -1,0 +1,137 @@
+[
+	{
+		"id": 8,
+		"title": "produrcto dos actualidado desde soket ok",
+		"description": "produrcto dos actualidado desde put",
+		"price": 900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "45768",
+		"stock": 60
+	},
+	{
+		"id": 9,
+		"title": "Producto probando soket",
+		"description": "Descripción cargado desde post 2 y handlebars",
+		"price": 900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "23445986587654658678678",
+		"stock": 60
+	},
+	{
+		"id": 10,
+		"title": "soket",
+		"description": "Descripción cargado desde post 2 y handlebars",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "23445986587654658678567678678",
+		"stock": 60
+	},
+	{
+		"id": 11,
+		"title": "soket",
+		"description": "Descripción cargado desde post 2 y handlebars",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "23445986587654658678567678678879789678890",
+		"stock": 60
+	},
+	{
+		"id": 12,
+		"title": "soket 4567",
+		"description": "Descripción cargado desde post 2 y handlebars",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "9789678890",
+		"stock": 60
+	},
+	{
+		"id": 13,
+		"title": "soket ok",
+		"description": "actualizado en tiempo real ",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "0967434565673293645",
+		"stock": 60
+	},
+	{
+		"id": 14,
+		"title": "soket ok2",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "09674345656732936sdf45",
+		"stock": 60
+	},
+	{
+		"id": 15,
+		"title": "soket ok2",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "09674345656732936456567678sd789678f45",
+		"stock": 60
+	},
+	{
+		"id": 16,
+		"title": "soket ok4567",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "0967434565567856786732936456567678sd789678f45",
+		"stock": 60
+	},
+	{
+		"id": 17,
+		"title": "soket ok4567",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "0967123443456556785678671232432936456567678sd789678f45",
+		"stock": 60
+	},
+	{
+		"id": 18,
+		"title": "soket ok ok ok",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "0967123443456556785678671232433456575672936456567678sd789678f45",
+		"stock": 60
+	},
+	{
+		"id": 19,
+		"title": "soket 2222",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "0967123441232342353456556785678671232433456575672936456567678sd789678f45",
+		"stock": 60
+	},
+	{
+		"id": 20,
+		"title": "soket 3333",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "09671234412321232345342353456556785678671232433456575672936456567678sd789678f45",
+		"stock": 60
+	},
+	{
+		"id": 0,
+		"title": "soket si si",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "0967123dfgert4412321232345342353456556785678671232433456575672936456567678sd789678f45",
+		"stock": 60
+	},
+	{
+		"id": 21,
+		"title": "soket si si",
+		"description": "actualizado en tiempo real 2",
+		"price": 11900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "5675",
+		"stock": 60
+	}
+]

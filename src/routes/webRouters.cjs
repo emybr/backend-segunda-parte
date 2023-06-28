@@ -5,7 +5,7 @@ const ProductManagerDb = require('../dao/mongo/product-manager-db.cjs');
 const UserManagerDb = require('../dao/mongo/user-manager-db.cjs');
 const CartsManagerDb = require('../dao/mongo/carts-manager.db.cjs');
 const TicketManagerDb = require('../dao/mongo/ticket-manager.db.cjs');
-
+const supertest = require('supertest');
 
 
 const productManager = new ProductManager();

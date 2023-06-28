@@ -42,18 +42,20 @@ class ProductManagerDb {
         }
     }
 
-    async updateProduct(id, name, price) {
+    async updateProduct(id, title, price) {
+        console.log(id, title, price);
         try {
             if (!this.db.database) {
                 await this.db.connectToDatabase();
             }
             const result = await this.db.database.updateOne(
-                { _id: id },
-                { $set: { name: name, price: price } }
+                { id },
+                { $set: { title, price } }
             );
             return result;
         } catch (e) {
-            console.error(e);
+            // console.error(e);
+            throw new Error('Error al actualizar el producto');
         }
     }
 
@@ -62,7 +64,7 @@ class ProductManagerDb {
             if (!this.db.database) {
                 await this.db.connectToDatabase();
             }
-            const result = await this.db.database.deleteOne({ _id: id });
+            const result = await this.db.database.deleteOne({ id });
             return result;
         } catch (e) {
             console.error(e);

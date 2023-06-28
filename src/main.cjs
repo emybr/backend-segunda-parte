@@ -22,6 +22,7 @@ const bcrypt = require('bcrypt');
 const passportGithub = require('passport-github');
 const { mensajes, errores } = require('./errores/errores.cjs');
 
+
 // creo configuracion de mango para guardar sesiones
 
 const store = MongoStore.create({
