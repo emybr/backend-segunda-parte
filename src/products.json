@@ -1,14 +1,5 @@
 [
 	{
-		"id": 8,
-		"title": "produrcto dos actualidado desde soket ok",
-		"description": "produrcto dos actualidado desde put",
-		"price": 900,
-		"thumbnail": "https://via.placeholder.com/150",
-		"code": "45768",
-		"stock": 60
-	},
-	{
 		"id": 9,
 		"title": "Producto probando soket",
 		"description": "Descripción cargado desde post 2 y handlebars",
@@ -133,5 +124,14 @@
 		"thumbnail": "https://via.placeholder.com/150",
 		"code": "5675",
 		"stock": 60
+	},
+	{
+		"id": 22,
+		"title": "restructutado",
+		"description": "actualizado 333",
+		"price": 1900,
+		"thumbnail": "https://via.placeholder.com/150",
+		"code": "5675678943",
+		"stock": 50
 	}
 ]

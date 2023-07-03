@@ -77,7 +77,7 @@ class UserManagerDb {
     async getUserById(id) {
         try {
             if (!this.db.usersCollection) {
-                await this.connectToDatabase();
+                await this.db.connectToDatabase();
             }
             const user = await this.db.usersCollection.findOne({ _id: id });
             return user;
