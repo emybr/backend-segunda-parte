@@ -3,10 +3,11 @@ const express = require('express');
 const webRouter = express.Router();
 const passport = require('passport');
 const { ensureAuthenticated } = require('../middleware/autenticacion.cjs');
-const { getUserController, getRegisterUser, postRegisterUser, postLoginUser, postLogout, getGenerateResetLink, getResetToken, postResetPassword, postResetToken, } = require('../Controllers/mongo/user.controlers.cjs');
+const { getUserController, getRegisterUser, postRegisterUser, postLoginUser, postLogout, getGenerateResetLink, getResetToken, postResetPassword, postResetToken, updateUserFile, postPremiumUser, } = require('../Controllers/mongo/user.controlers.cjs');
 const {getCartsByEmail} = require('../Controllers/mongo/cars.controlers.cjs')
 const { getProducDB} = require('../Controllers/mongo/products.controlers.cjs');
 const { postTiketDB } = require('../Controllers/mongo/tickets.controlers.cjs');
+const { upload } = require('../middleware/multer.cjs');
 
 // agrego ruta para login
 
@@ -44,6 +45,18 @@ webRouter.get('/reset/:token', getResetToken);
 webRouter.post('/reset/token', postResetToken);
 
 webRouter.post(`/reset-password`, postResetPassword);
+
+//agrego ruta para subir archivo y cambiar rol a premium
+
+ webRouter.post('/upload', upload.fields([
+    { name: 'dni', maxCount: 1 },
+    { name: 'comprobanteDomicilio', maxCount: 1 },
+    { name: 'comprobanteCuenta', maxCount: 1 }
+  ]), updateUserFile);
+
+ //agrego ruta para renderizar la vista user premium
+
+webRouter.post('/premium', postPremiumUser);
 
 
 // agrego ruta para chat

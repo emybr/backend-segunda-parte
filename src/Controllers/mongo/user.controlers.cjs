@@ -6,6 +6,7 @@ const userManagerDb = new UserManagerDb();
 const passport = require('passport');
 const { ensureAuthenticated } = require('../../middleware/autenticacion.cjs')
 
+
 async function getUserController (req, res) { 
     res.render('login');    
 }
@@ -21,6 +22,12 @@ async function getGenerateResetLink (req, res) {
 async function getResetToken (req, res) {
     const token = req.params.token;
     res.render('resetUserPassword', { token });
+}
+
+async function postPremiumUser(req, res) {
+    const email = req.body.email; 
+    console.log(email);
+    res.render('vistaUpdateUserPremium', { email });
 }
 
 
@@ -69,8 +76,7 @@ async function postLogout (req, res) {
             req.session.email = null;
         }
         res.redirect('/login');
-    ;
-}
+    };
 
 
 async function postResetPassword (req, res) {
@@ -100,7 +106,42 @@ async function postResetToken (req, res) {
     } catch (error) {
         console.error(error);
     }
-}
+};
 
-module.exports = {getUserController, getRegisterUser, postRegisterUser, postLoginUser,postLogout,getGenerateResetLink, getResetToken, postResetPassword,postResetToken  }
+    
+async function updateUserFile(req, res) {
+    const email = req.session.email;
+    const files = {
+        dni: req.files.dni,
+        comprobanteDomicilio: req.files.comprobanteDomicilio,
+        comprobanteCuenta: req.files.comprobanteCuenta
+    };
+    try {
+        await userManagerDb.setPremiunRole(email);
+        const fileUrls = {
+            dni: files.dni[0].path.replace(/\\/g, "/"),
+            comprobanteDomicilio: files.comprobanteDomicilio[0].path.replace(/\\/g, "/"),
+            comprobanteCuenta: files.comprobanteCuenta[0].path.replace(/\\/g, "/")
+        };
+        await userManagerDb.updateUserFiles(email, fileUrls);
+        res.send('Archivos subidos correctamente');
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+module.exports = {
+    getUserController,
+    getRegisterUser,
+    postRegisterUser,
+    postLoginUser,
+    postLogout,
+    getGenerateResetLink,
+    getResetToken,
+    postResetPassword,
+    postResetToken,
+    updateUserFile,
+    postPremiumUser
+};
 

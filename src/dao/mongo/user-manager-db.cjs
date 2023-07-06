@@ -3,7 +3,7 @@ const Database = require('../../config/config.cjs');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { sendEmail } = require('../../service/email.service.cjs');
-
+const UserModels = require('./Models/user.models.cjs');
 
 
 class UserManagerDb {
@@ -16,14 +16,27 @@ class UserManagerDb {
             if (!this.db.usersCollection) {
                 await this.db.connectToDatabase();
             }
+
             const isAdmin = email === 'admin@example.com';
             const hashedPassword = await bcrypt.hash(password, 10);
-            await this.db.usersCollection.insertOne({ nombre, apellido, edad, email, password: hashedPassword, role: isAdmin ? 'admin' : 'user', cartId });
-        }
-        catch (e) {
+
+            const user = new UserModels({
+                nombre,
+                apellido,
+                edad,
+                email,
+                password: hashedPassword,
+                role: isAdmin ? 'admin' : 'user',
+                cartId
+            });
+
+            await this.db.usersCollection.insertOne(user);
+        } catch (e) {
             console.error(e);
         }
     }
+
+
 
     async setAdminRole(email) {
         try {
@@ -35,6 +48,23 @@ class UserManagerDb {
                 throw new Error('User not found');
             }
             user.role = 'admin';
+            await this.db.usersCollection.replaceOne({ email }, user);
+            return user;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async setPremiunRole(email) {
+        try {
+            if (!this.db.usersCollection) {
+                await this.db.connectToDatabase();
+            }
+            const user = await this.db.usersCollection.findOne({ email });
+            if (!user) {
+                throw new Error('User not found');
+            }
+            user.role = 'premium';
             await this.db.usersCollection.replaceOne({ email }, user);
             return user;
         } catch (e) {
@@ -88,7 +118,7 @@ class UserManagerDb {
     }
 
 
-  
+
     async actualizarContraseña(email) {
         const token = crypto.randomBytes(20).toString('hex');
         const createdAt = Date.now();
@@ -113,21 +143,21 @@ class UserManagerDb {
     }
 
 
-async updatePassword(email, newPassword) {
-    console.log(newPassword, 'newPassword');
-    try {
-        if (!this.db.usersCollection) {
-            await this.db.connectToDatabase();
+    async updatePassword(email, newPassword) {
+        console.log(newPassword, 'newPassword');
+        try {
+            if (!this.db.usersCollection) {
+                await this.db.connectToDatabase();
+            }
+            const hashedPassword = await bcrypt.hash(newPassword, 10); // Generar el hash de la nueva contraseña sin utilizar un salt
+            await this.db.usersCollection.updateOne({ email }, { $set: { password: hashedPassword } });
+        } catch (error) {
+            console.error(error);
         }
-        const hashedPassword = await bcrypt.hash(newPassword, 10); // Generar el hash de la nueva contraseña sin utilizar un salt
-        await this.db.usersCollection.updateOne({ email }, { $set: { password: hashedPassword }});
-    } catch (error) {
-        console.error(error);
     }
-}
 
 
-    
+
     async getPasswordResetToken(token) {
         try {
             if (!this.db.passwordResetTokensCollection) {
@@ -140,6 +170,17 @@ async updatePassword(email, newPassword) {
         }
     }
 
+    async updateUserFiles(email, fileUrls) {
+        console.log(fileUrls, 'fileUrls');
+        try {
+            if (!this.db.usersCollection) {
+                await this.db.connectToDatabase();
+            }
+            await this.db.usersCollection.updateOne({ email }, { $set: { files : fileUrls } });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
 }
 

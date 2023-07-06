@@ -51,6 +51,12 @@
   <form action="/logout" method="POST">
     <button type="submit">Cerrar sesión</button>
   </form>
+{{!-- agrego boton para pasar usuario a premium  para renderizar vista --}}
+<form action="/premium" method="post">
+    <input type="hidden" name="email" value="{{email}}">
+    <button type="submit">Pasar a premium</button>
+</form>
+
 </body>
 
 </html>

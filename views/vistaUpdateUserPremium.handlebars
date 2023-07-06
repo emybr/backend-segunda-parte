@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulario de Autenticación</title>
+</head>
+<body>
+    <h1>Formulario de Autenticación</h1>
+
+    <h2>Bienvenido {{email}}</h2> <!-- Muestra el correo electrónico recuperado -->
+
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <label for="dni">DNI:</label>
+        <input type="file" id="dni" name="dni" accept=".jpg, .png, .pdf" required>
+
+        <label for="comprobanteDomicilio">Comprobante de Domicilio:</label>
+        <input type="file" id="comprobanteDomicilio" name="comprobanteDomicilio" accept=".jpg, .png, .pdf" required>
+
+        <label for="comprobanteCuenta">Comprobante de Cuenta:</label>
+        <input type="file" id="comprobanteCuenta" name="comprobanteCuenta" accept=".jpg, .png, .pdf" required>
+
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
