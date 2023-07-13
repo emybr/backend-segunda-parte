@@ -2,6 +2,7 @@ const { getProducsFile, getProducsFileID, getAllProducsFile, postNewProductFile,
 const express = require('express');
 const router = express.Router();
 const { ProductManager } = require("../dao/file/product-manager.cjs");
+const { deleteUserInactivo } = require("../Controllers/mongo/user.controlers.cjs");
 const { Carts } = require("../dao/file/carts.cjs");
 const { mensajes, errores } = require('../errores/errores.cjs');
 const { getCarsIdFile, postAddCarsfile, postAddProductsCarFile } = require('../Controllers/file/cars.controlets.cjs');
@@ -51,6 +52,10 @@ router.post('/carts/:cid/products/:pid',postAddProductsCarFile)
 // agrego ruta para recuperar carito por id
 
 router.get('/carts/:cid',getCarsIdFile);
+
+// agrego ruta para eliminar usuarios unactivos por 2 dias
+
+router.delete('/delete', deleteUserInactivo);
 
 
 module.exports = router;

@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     },
     files: {
         type: [String]
+    },
+    lastconnection: {
+        type: Date,
+        default: Date.now
     }
 });
 

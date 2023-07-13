@@ -1,37 +1,41 @@
 
-const {winstonLogger} = require('../../middleware/logger.cjs');
-const UserManagerDb = require ('../../dao/mongo/user-manager-db.cjs');
+const { winstonLogger } = require('../../middleware/logger.cjs');
+const UserManagerDb = require('../../dao/mongo/user-manager-db.cjs');
 const { info } = require('winston');
 const userManagerDb = new UserManagerDb();
 const passport = require('passport');
 const { ensureAuthenticated } = require('../../middleware/autenticacion.cjs')
+const UserModels = require('../../dao/mongo/models/user.models.cjs');
+const User = new UserModels();
+// const { Database } = require('../../dao/mongo/database.cjs');
+// const { set } = require('mongoose');
 
 
-async function getUserController (req, res) { 
-    res.render('login');    
+async function getUserController(req, res) {
+    res.render('login');
 }
 
-async function getRegisterUser (req, res) {
+async function getRegisterUser(req, res) {
     res.render('register');
 }
 
-async function getGenerateResetLink (req, res) {
+async function getGenerateResetLink(req, res) {
     res.render('generateResetLink');
 }
 
-async function getResetToken (req, res) {
+async function getResetToken(req, res) {
     const token = req.params.token;
     res.render('resetUserPassword', { token });
 }
 
 async function postPremiumUser(req, res) {
-    const email = req.body.email; 
+    const email = req.body.email;
     console.log(email);
     res.render('vistaUpdateUserPremium', { email });
 }
 
 
-async function postRegisterUser (req, res) {
+async function postRegisterUser(req, res) {
     try {
         const { nombre, apellido, edad, email, password, cartId } = req.body;
         await userManagerDb.createUser(nombre, apellido, edad, email, password, cartId);
@@ -45,49 +49,87 @@ async function postRegisterUser (req, res) {
     }
 }
 
-async function postLoginUser (req, res, next)  {
-    passport.authenticate('local', (err, user, info) => {
+// async function postLoginUser(req, res, next) {
+//     passport.authenticate('local', (err, user, info) => {
+//         if (err) {
+//             return next(err);
+//         }
+//         if (!user) {
+//             return res.status(401).send(info.message);
+//         }
+//         req.logIn(user, (err) => {
+//             if (err) {
+//                 return next(err);
+//             }
+//             req.session.email = user.email;
+//             if (user.role === 'admin') {
+//                 req.session.isAdmin = true;
+//             }
+//             const welcomeMessage = `Bienvenido, ${user.email} 😃`;
+//             req.session.message = welcomeMessage;
+//             return res.redirect('/products/db');
+//         });
+//     })(req, res, next);
+// }
+
+
+
+async function postLoginUser(req, res, next) {
+    passport.authenticate('local', async (err, user, info) => {
         if (err) {
             return next(err);
         }
         if (!user) {
             return res.status(401).send(info.message);
         }
-        req.logIn(user, (err) => {
-            if (err) {
-                return next(err);
-            }
-            req.session.email = user.email;
-            if (user.role === 'admin') {
-                req.session.isAdmin = true;
-            }
-            const welcomeMessage = `Bienvenido, ${user.email} 😃`;
-            req.session.message = welcomeMessage;
-            return res.redirect('/products/db');
-        });
+
+        try {
+            // Actualizar lastConnection al iniciar sesión
+            await userManagerDb.setLastConnection(user.email);
+
+            req.logIn(user, (err) => {
+                if (err) {
+                    return next(err);
+                }
+                req.session.email = user.email;
+                if (user.role === 'admin') {
+                    req.session.isAdmin = true;
+                }
+                const welcomeMessage = `Bienvenido, ${user.email} 😃`;
+                req.session.message = welcomeMessage;
+                return res.redirect('/products/db');
+            });
+        } catch (error) {
+            console.error('Error al actualizar lastConnection:', error);
+            // Manejo de errores aquí
+        }
     })(req, res, next);
 }
 
-async function postLogout (req, res) {
-    (req, res) 
-        if (req.session.email === 'admin@example.com') {
-            req.session.destroy();
-        } else {
-            req.session.email = null;
-        }
-        res.redirect('/login');
-    };
 
 
-async function postResetPassword (req, res) {
-    (req, res)  
-        const { email } = req.body;
-        await userManagerDb.actualizarContraseña(email);
-        res.send(`Se ha enviado un email a ${email} para resetear la contraseña`);
-    };
 
 
-async function postResetToken (req, res) {
+async function postLogout(req, res) {
+    (req, res)
+    if (req.session.email === 'admin@example.com') {
+        req.session.destroy();
+    } else {
+        req.session.email = null;
+    }
+    res.redirect('/login');
+};
+
+
+async function postResetPassword(req, res) {
+    (req, res)
+    const { email } = req.body;
+    await userManagerDb.actualizarContraseña(email);
+    res.send(`Se ha enviado un email a ${email} para resetear la contraseña`);
+};
+
+
+async function postResetToken(req, res) {
     const token = req.body.token;
     const newPassword = req.body.newPassword;
     try {
@@ -108,7 +150,7 @@ async function postResetToken (req, res) {
     }
 };
 
-    
+
 async function updateUserFile(req, res) {
     const email = req.session.email;
     const files = {
@@ -130,6 +172,18 @@ async function updateUserFile(req, res) {
     }
 };
 
+async function deleteUserInactivo(req, res) {
+    try {
+        await userManagerDb.deleteInactiveUsers();
+        return res.status(200).json({ message: 'Usuarios inactivos eliminados correctamente' });
+    } catch (error) {
+        console.error('Error al eliminar usuarios inactivos:', error);
+        return res.status(500).json({ message: 'Error al eliminar usuarios inactivos' });
+    }
+}
+
+
+
 
 module.exports = {
     getUserController,
@@ -142,6 +196,7 @@ module.exports = {
     postResetPassword,
     postResetToken,
     updateUserFile,
-    postPremiumUser
+    postPremiumUser,
+    deleteUserInactivo
 };
 

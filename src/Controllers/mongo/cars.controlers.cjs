@@ -25,7 +25,8 @@ async function postAddCards (req, res) {
 async function postCardbyEmail (req, res) {
     await cartsManagerDb.addProductToCart(req.params.email, req.body);
     await cartsManagerDb.updateCartIdUser(req.params.email);
-    res.send({ message: 'Producto agregado al carrito' });
+    // res.send({ message: 'Producto agregado al carrito' });
+    res.redirect(`/carts/${req.params.email}`);
     winstonLogger.debug('Producto agregado al carrito');
 }
 

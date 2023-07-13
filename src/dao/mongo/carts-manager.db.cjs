@@ -18,7 +18,7 @@ class CartsManagerDb {
         }
     }
 
-    // funciona bien trabaja con email
+
 
     async addProductToCart(email, product) {
         console.log(product);
@@ -28,19 +28,19 @@ class CartsManagerDb {
             }
             const cart = await this.db.cartsCollection.findOne({ email });
             if (cart) {
-                const existingProduct = cart.products.find(p => p.id === product.id);
+                const existingProduct = cart.products.find(p => p.id === parseInt(product.id));
                 if (existingProduct) {
                     existingProduct.quantity++;
                 } else {
                     product.quantity = 1;
                     const cartProduct = {
-                        id: product.id,
+                        id: parseInt(product.id),
                         title: product.title,
                         description: product.description,
-                        price: product.price,
+                        price: parseFloat(product.price),
                         thumbnail: product.thumbnail,
                         code: product.code,
-                        stock: product.stock,
+                        stock: parseInt(product.stock),
                         quantity: 1
                     };
                     cart.products.push(cartProduct);
@@ -52,13 +52,13 @@ class CartsManagerDb {
                     email: email,
                     timestamp: new Date(),
                     products: [{
-                        id: product.id,
+                        id: parseInt(product.id),
                         title: product.title,
                         description: product.description,
-                        price: product.price,
+                        price: parseFloat(product.price),
                         thumbnail: product.thumbnail,
                         code: product.code,
-                        stock: product.stock,
+                        stock: parseInt(product.stock),
                         quantity: 1
                     }]
                 });
@@ -68,7 +68,7 @@ class CartsManagerDb {
             console.error(e);
         }
     }
-
+    
 
     async updateCartIdUser(email) {
         try {

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const UserManagerDb = require("../dao/mongo/user-manager-db.cjs");
 const userManagerDb = new UserManagerDb();
-const userModels = require("../dao/mongo/Models/user.models.cjs");
+const userModels = require("../dao/mongo/models/user.models.cjs");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

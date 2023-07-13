@@ -15,6 +15,8 @@ const ChatManagerDb = require('./dao/mongo/chat-manager.db.cjs');
 const { ProductManager } = require('./dao/file/product-manager.cjs');
 const db = new Database();
 const chatManagerDb = new ChatManagerDb
+const path = require('path');
+
 
 // Configuración de sesión
 sessionConfig(app);
@@ -28,10 +30,19 @@ app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', engine());
 app.set('views', '../views');
 app.set('view engine', 'handlebars');
-app.use(express.static('../public'));
+// app.use(express.static('../public'));
+// app.use(express.static(path.join(__dirname, '../public')));
+
+const publicPath = path.join(__dirname, '../public');
+app.use(express.static(publicPath));
+  
+
 app.use('/db', mongoRoutes);
 app.use('/api', routes);
-app.use('/', webRouter);
+app.use('/', webRouter,);
+
+
+
 
 // Conexión a la base de datos y inicio del servidor
 db.connectToDatabase()

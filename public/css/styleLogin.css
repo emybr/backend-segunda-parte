@@ -1,0 +1,192 @@
+body {
+  background-color: #e8e8e8;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  /* line-height: 1.5; */
+  color: #212529;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.titulo {
+  text-align: center;
+  margin-top: 98px;
+  margin-bottom: 87px;
+  color: darkgrey;
+  font-size: 49px;
+  text-decoration: none;
+}
+
+.link-sin-estilo {
+  text-decoration: none;
+  color: darkgrey;
+}
+
+.link-sin-estilo:hover {
+  text-decoration: none;
+}
+
+.boton {
+  color: #090909;
+  padding: 0.2em 1.7em;
+  font-size: 12px;
+  border-radius: 0.5em;
+  background: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  transition: all .3s;
+  box-shadow: 6px 6px 12px #c5c5c5,
+    -6px -6px 12px #ffffff;
+}
+
+.boton:active {
+  color: #666;
+  box-shadow: inset 4px 4px 12px #c5c5c5,
+    inset -4px -4px 12px #ffffff;
+}
+
+
+.btn {
+  display: grid;
+  place-items: center;
+  background: #e3edf7;
+  padding: 1.4em;
+  border-radius: 10px;
+  box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0);
+  cursor: pointer;
+  transition: transform 0.5s;
+  margin: 20px;
+  padding: 5px;
+  margin-top: 21px;
+  margin-left: 43px;
+}
+
+.btn:hover {
+  box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.2),
+    inset -4px -4px 6px -1px rgba(255, 255, 255, 0.7),
+    -0.5px -0.5px 0px rgba(255, 255, 255, 1),
+    0.5px 0.5px 0px rgba(0, 0, 0, 0.15),
+    0px 12px 10px -10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transform: translateY(0.5em);
+}
+
+.btn svg {
+  transition: transform 0.5s;
+}
+
+.btn:hover svg {
+  transform: scale(0.9);
+  fill: #333333;
+}
+
+
+
+.card {
+  width: 450px;
+  height: 254px;
+  background: lightgrey;
+  border: 3px inset white;
+  background: #e8e8e8;
+  box-shadow: inset 20px 20px 60px #c5c5c5, inset -20px -20px 60px #ffffff;
+  transition: all .5s ease-in-out;
+  border-radius: 1.5rem;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  color: #8a8989;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  transition: all .5s ease-in-out;
+}
+
+.texlogin {
+  font-size: 12px;
+  font-weight: bold;
+  color: #8a8989;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+.form {
+  margin-top: 133px;
+  margin-bottom: -8px;
+  font-weight: bold;
+  color: #8a8989;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+.texlogin2 {
+  font-size: 12px;
+  font-weight: bold;
+  color: #8a8989;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  display: block;
+  justify-content: center;
+  padding: 5px;
+  margin-left: 27px;
+}
+
+.github {
+  display: flex;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.link {
+  text-decoration: none;
+  color: #3487c8;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  margin-left: 16px;
+}
+
+
+.input {
+  border: none;
+  outline: none;
+  border-radius: 15px;
+  padding: 1em;
+  background-color: #ccc;
+  box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3);
+  transition: 300ms ease-in-out;
+  width: 123px;
+  height: 4px;
+}
+
+.input:focus {
+  background-color: white;
+  transform: scale(1.05);
+  box-shadow: 13px 13px 100px #969696,
+    -13px -13px 100px #ffffff;
+}
+
+.imagen {
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
+  margin-bottom: -97px;
+  margin-left: 178px;
+  color: #3487c8;
+}
+
+.iconoCarrito {
+  margin-top: 10px;
+  margin-bottom: 4px;
+  margin-left: 75px;
+  margin-right: 27px;
+
+}

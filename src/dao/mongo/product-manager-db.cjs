@@ -1,10 +1,13 @@
 
 const Database = require('../../config/config.cjs');
+const { createDocument } = require('./factory/factoryMd.cjs');
+const ProductModels = require('./models/produc.models.cjs')
 
 
 class ProductManagerDb {
     constructor() {
         this.db = new Database();
+        this.createDocument = createDocument;
     }
 
     async getProducts(limit = 10, page = 1, sort, query) {
@@ -30,16 +33,19 @@ class ProductManagerDb {
         }
     }
 
+
     async createProduct(id, title, description, price, thumbnail, code, stock) {
-        try {
-            if (!this.db.database) {
-                await this.db.connectToDatabase();
-            }
-            const result = await this.db.database.insertOne({ id, title, description, price, thumbnail, code, stock });
-            return result;
-        } catch (e) {
-            console.error(e);
-        }
+        const product = new ProductModels( {
+            id,
+            title,
+            description,
+            price,
+            thumbnail,
+            code,
+            stock
+        });
+
+        await this.createDocument('database', product);
     }
 
     async updateProduct(id, title, price) {

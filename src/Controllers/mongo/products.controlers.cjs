@@ -1,11 +1,13 @@
 const ProductManagerDb = require('../../dao/mongo/product-manager-db.cjs')
 const productManagerDb = new ProductManagerDb
+const {winstonLogger} = require('../../middleware/logger.cjs')  
+const mensajes = require('../../config/config.cjs')
 
 
 async function getProducDB (req, res) {
     
         try {
-            const limit = parseInt(req.query.limit) || 5;
+            const limit = parseInt(req.query.limit) || 8;
             const page = parseInt(req.query.page) || 1;
             const sort = req.query.sort;
             const query = req.query.query;

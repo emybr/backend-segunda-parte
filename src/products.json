@@ -133,5 +133,14 @@
 		"thumbnail": "https://via.placeholder.com/150",
 		"code": "5675678943",
 		"stock": 50
+	},
+	{
+		"id": 23,
+		"title": "Camisa Negra",
+		"description": "camisa confeccionada en algodón frisado",
+		"price": 900,
+		"thumbnail": "https://i.imgur.com/QrasHav.jpeg",
+		"code": "45768",
+		"stock": 11
 	}
 ]

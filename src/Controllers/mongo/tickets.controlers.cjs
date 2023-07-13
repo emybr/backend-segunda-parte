@@ -4,6 +4,7 @@ const CartsManagerDb = require ('../../dao/mongo/carts-manager.db.cjs')
 const cartsManagerDb = new CartsManagerDb
 const ticketManagerDb = new TicketManagerDb
 const productManagerDb = new ProductManagerDb
+
 const {winstonLogger} = require('../../middleware/logger.cjs')
 
 const { mensajes, errores } = require('../../errores/errores.cjs');
@@ -34,7 +35,8 @@ async function postTiketDB ( req, res) {
                     for (var i = 0; i < productIds.length; i++) {
                         await cartsManagerDb.removeCartItem(email, productIds[i]);
                     }
-                    res.send({ message: 'Ticket creado exitosamente', data: result });
+                    // res.send({ message: 'Ticket creado exitosamente', data: result });
+                    res.render('vistaTicket', {amount, email, message: 'Su ticket creado exitosamente', data: result});
                 } else {
                     // Si hay productos sin stock suficiente, devolver los IDs de los productos no procesados
                     res.send({
@@ -50,4 +52,5 @@ async function postTiketDB ( req, res) {
         }
 }
 
-module.exports = {postTiketDB, postTiketDB}
+
+module.exports = {postTiketDB}

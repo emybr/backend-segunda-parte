@@ -1,0 +1,80 @@
+.containerTicket {
+    position: relative;
+    font-family: sans-serif;
+  }
+  
+  .containerTicket::before, .containerTicket::after {
+    content: "";
+    background-color: #fab5704c;
+    position: absolute;
+  }
+  
+  .containerTicket::before {
+    border-radius: 50%;
+    width: 6rem;
+    height: 6rem;
+    top: 30%;
+    right: 42%;
+  }
+  
+  .containerTicket::after {
+    content: "";
+    position: absolute;
+    height: 3rem;
+    top: 11%;
+    right: 42%;
+    border: 1px solid;
+  }
+  
+  .containerTicket .box {
+    width: 11.875em;
+    height: 15.875em;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.074);
+    border: 1px solid rgba(255, 255, 255, 0.222);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-radius: .7rem;
+    transition: all ease .3s;
+    margin-left: 43%;
+    margin-top: 13%;
+  }
+  
+  .containerTicket .box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .containerTicket .box .title {
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: .1em
+  }
+  
+  .containerTicket .box div strong {
+    display: block;
+    margin-bottom: .5rem;
+  }
+  
+  .containerTicket .box div p {
+    margin: 0;
+    font-size: .9em;
+    font-weight: 300;
+    letter-spacing: .1em;
+  }
+  
+  .containerTicket .box div span {
+    font-size: .7rem;
+    font-weight: 300;
+  }
+  
+  .containerTicket .box div span:nth-child(3) {
+    font-weight: 500;
+    margin-right: .2rem;
+  }
+  
+  .containerTicket .box:hover {
+    box-shadow: 0px 0px 20px 1px #ffbb763f;
+    border: 1px solid rgba(255, 255, 255, 0.454);
+  }

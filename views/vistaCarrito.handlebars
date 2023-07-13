@@ -1,42 +1,79 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Carrito</title>
-</head>
-<body>
 
+
+<div class="navbar">
+  <form action="/premium" method="post">
+    <input type="hidden" name="email" value="{{email}}">
+    
+    <button class="BtnPremium"> <svg viewBox="0 0 576 512" height="1em" class="logoIcon">
+        <path
+          d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z">
+        </path>
+      </svg> Pasar a premium</button>
+  </form>
+  <p class="titulo"><a href="http://localhost:8080/products/db" class="link-sin-estilo">BOUVERI</a></p>
+  <div class="iconoCarrito">
+    <a href="/carts/{{email}}">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shopping-cart" width="28" height="28"
+        viewBox="0 0 24 24" stroke-width="2" stroke="#BD9391" fill="none" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+        <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+        <path d="M17 17h-11v-14h-2"></path>
+        <path d="M6 5l14 1l-1 7h-13"></path>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<div class="tituloCarrito">
     <h1>Detalles del carrito:</h1>
-    <p><strong>Email:</strong> {{carts.email}}</p>
-    <p><strong>ID del carrito:</strong> {{carts._id}}</p>
-    <p><strong>Fecha de creación:</strong> {{carts.timestamp}}</p>
-    <p><strong>Productos:</strong></p>
-    <ul>
-        {{#each carts.products}}
-            <li>id:{{this.id}}</li>
-            <li>title: {{this.title}}</li>
-            <li>description: {{this.description}}</li>
-            <li>price: {{this.price}}</li>
-            <li>thumbnail: {{this.thumbnail}}</li>
-            <li>stock: {{this.stock}}</li>
-        {{/each}}
+</div>
+
+<div class="cardCarrito">
+    <div class="content">
+        <p><strong>Email:</strong> {{carts.email}}</p>
+        <div class="tituloProducto">
+            <p><strong>Productos:</strong></p>
+        </div>
+        <ul class="listaProductos">
+            {{#each carts.products}}
+            {{!-- <li>id:{{this.id}}</li> --}}
+            <li>Titulo: {{this.title}}</li>
+            <li>Description: {{this.description}}</li>
+            <li>Precio: {{this.price}}</li>
+            </br>
+            {{/each}}
         </ul>
-        <P><strong>total:</strong> {{total}}</P>
+        <div class="total">
+            <P><strong>total:</strong> {{total}}</P>
+        </div>
+        <div >
+            <form action="/db/mongo/carts/{{carts._id}}" method="POST">
+                <button class="botonesEliminarProducto" type="submit">vaciar Carrito</button>
+            </form>   
+        </div>
 
 
-<form action="/mongo/tickets" method="POST">
-    <input type="hidden" name="amount" value="{{total}}">
-    <input type="hidden" name="purchaser" value="{{carts.email}}">
-    <input type="hidden" name="email" value="{{carts.email}}">
-    <input type="hidden" name="cartId" value="{{carts._id}}">
-    {{#each carts.products}}
-        {{#if this.id}}
-        
+        <form action="/mongo/tickets" method="POST">
+            <input type="hidden" name="amount" value="{{total}}">
+            <input type="hidden" name="purchaser" value="{{carts.email}}">
+            <input type="hidden" name="email" value="{{carts.email}}">
+            <input type="hidden" name="cartId" value="{{carts._id}}">
+            {{#each carts.products}}
+            {{#if this.id}}
+
             <input type="hidden" name="productIds" value="{{this.id}}">
             <input type="hidden" name="stock" value="{{this.stock}}">
-        {{/if}}
-    {{/each}}
-    <button type="submit">Finalizar compra</button>
-</form>
+            {{/if}}
+            {{/each}}
+            <button class="btnFinalizar" type="submit">Finalizar compra</button>
+        </form>
+    </div>
+</div>
 
-</body>
-</html>
+<footer>
+  <form action="/logout" method="POST">
+    <button class="botonCerrarSesionCarrito" type="submit" >Cerrar sesión</button>
+  </form>
+</footer>
