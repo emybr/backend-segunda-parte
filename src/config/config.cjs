@@ -5,7 +5,8 @@ require('dotenv').config();
 
 class Database {
     constructor() {
-        this.uri = process.env.NODE_ENV === 'test' ? process.env.TEST_DB_URI : process.env.PRODUCTION_DB_URI;
+        this.uri = "mongodb+srv://emybr82ar:92713@cluster0.apsr9qa.mongodb.net/?retryWrites=true&w=majority"
+        // this.uri = process.env.NODE_ENV === 'test' ? process.env.TEST_DB_URI : process.env.PRODUCTION_DB_URI;
         this.client = new MongoClient(this.uri);
     }
 

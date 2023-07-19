@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = process.env.PORT;
+const port = 8080;
 const  {engine}   = require('express-handlebars');
 const httpServer = require('http').createServer(app);
 const { Server } = require('socket.io');
@@ -29,7 +29,7 @@ passportConfig(app, userManagerDb);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', engine());
-app.set('views', '../views');
+app.set('views', './views');
 app.set('view engine', 'handlebars');
 
 

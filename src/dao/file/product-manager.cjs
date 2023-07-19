@@ -11,7 +11,7 @@ class ProductManager  {
 
     // guardo contenido en un archivo json antes de sobreescribirlo
     saveProducts() {
-        fs.writeFileSync('./products.json', JSON.stringify(this.products, null, '\t'));
+        fs.writeFileSync('products.json', JSON.stringify(this.products, null, '\t'));
     }
 
     // Añade un nuevo producto a la lista de productos
@@ -68,15 +68,29 @@ class ProductManager  {
     }
 
     // Carga los productos desde un archivo JSON
+    // loadProductsFromFile() {
+    //     // Lee los datos del archivo JSON
+    //     // let productsData = fs.readFileSync("./products.json", "utf-8");
+    //     let productsData = fs.readFileSync("./products.json", "utf-8");
+    //     // Convierte los datos en un objeto JavaScript
+    //     let products = JSON.parse(productsData);
+    //     // Concatena los productos nuevos con los existentes
+    //     this.products = this.products.concat(products);
+    // }
     loadProductsFromFile() {
         // Lee los datos del archivo JSON
-        // let productsData = fs.readFileSync("./products.json", "utf-8");
-        let productsData = fs.readFileSync("./products.json", "utf-8");
-        // Convierte los datos en un objeto JavaScript
-        let products = JSON.parse(productsData);
-        // Concatena los productos nuevos con los existentes
-        this.products = this.products.concat(products);
+        try {
+            let productsData = fs.readFileSync("./products.json", "utf-8");
+            // Convierte los datos en un objeto JavaScript
+            let products = JSON.parse(productsData);
+            // Concatena los productos nuevos con los existentes
+            this.products = this.products.concat(products);
+        }
+        catch (err) {
+            console.log("No se encontró el archivo");
+        }
     }
+
     // Eliminalo producto por su ID
     deleteProduct(id) {
         let product = this.products.find(product => product.id === id);
