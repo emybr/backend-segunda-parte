@@ -1,6 +1,6 @@
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const { collection } = require('../dao/mongo/models/user.models.cjs');
+// const { collection } = require('../dao/mongo/models/user.models.cjs');
 require('dotenv').config();
 
 const sessionConfig = (app) => {
@@ -20,4 +20,4 @@ const sessionConfig = (app) => {
     }));
 };
 
-module.exports = sessionConfig;
+module.exports = sessionConfig
