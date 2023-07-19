@@ -1,9 +1,12 @@
 const { postAddCards, postCardbyEmail } = require ('../Controllers/mongo/cars.controlers.cjs');
 const { putPoducsDB, deleteProduct, postProduc } = require ('../Controllers/mongo/products.controlers.cjs');
+const {deleteUser} = require('../Controllers/mongo/user.controlers.cjs')
 
 const express = require('express');
 const mongoRoutes = express.Router();
 const { route } = require('./routes.cjs');
+const { postSetAdminRole,postSetRoleByEmail } = require('../Controllers/mongo/user.controlers.cjs');
+const { de } = require('@faker-js/faker');
 
 // Ruta para actualizar un producto existente
 
@@ -23,43 +26,17 @@ mongoRoutes.post ('/mongo/carts/:email', postCardbyEmail)
 
 mongoRoutes.post('/mongo/products/addproduts', postProduc)
 
+// Ruta para setear el rol de admin
+
+mongoRoutes.post('/mongo/products/setAdmin', postSetAdminRole)
+
+// agrego ruta para eliminar un usaurio por email desde administrador
+
+mongoRoutes.post('/delet/users/:email', deleteUser )
+
+//agrego ruta para setear el rol de admin/premium/user
+
+mongoRoutes.post('/mongo/setRoleByEmail/:email', postSetRoleByEmail)
+
+
 module.exports = mongoRoutes;
-
-
-
-// //ver para que se usa ?
-
-// router.get('/mongo/products', async (req, res) => {
-//     try {
-//         const limit = parseInt(req.query.limit) || 5; // Si no se especifica limit, se establece en 10
-//         const page = parseInt(req.query.page) || 1; // Si no se especifica page, se establece en 1
-//         const sort = req.query.sort; // El parámetro sort es opcional
-//         const query = req.query.query; // El parámetro query es opcional
-
-//         const products = await productManagerDb.getProducts(limit, page, sort, query);
-//         const totalProducts = await productManagerDb.getTotalProducts(query);
-//         const totalPages = Math.ceil(totalProducts / limit);
-//         const hasPrevPage = page > 1;
-//         const hasNextPage = page < totalPages;
-//         const prevPage = hasPrevPage ? page - 1 : null;
-//         const nextPage = hasNextPage ? page + 1 : null;
-//         const prevLink = hasPrevPage ? `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}?limit=${limit}&page=${prevPage}` : null;
-//         const nextLink = hasNextPage ? `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}?limit=${limit}&page=${nextPage}` : null;
-
-//         res.json({
-//             status: 'success',
-//             payload: products,
-//             totalPages,
-//             prevPage,
-//             nextPage,
-//             page,
-//             hasPrevPage,
-//             hasNextPage,
-//             prevLink,
-//             nextLink,
-//         });
-//     } catch (error) {
-//         // res.status(500).send(mensajes.ERROR_PRODUCTO);
-//         winstonLogger.info('El producto no existe');
-//     }
-// });

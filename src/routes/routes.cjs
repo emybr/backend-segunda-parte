@@ -6,6 +6,8 @@ const { deleteUserInactivo } = require("../Controllers/mongo/user.controlers.cjs
 const { Carts } = require("../dao/file/carts.cjs");
 const { mensajes, errores } = require('../errores/errores.cjs');
 const { getCarsIdFile, postAddCarsfile, postAddProductsCarFile } = require('../Controllers/file/cars.controlets.cjs');
+const { getAllUsers } = require('../Controllers/mongo/user.controlers.cjs');
+const { mongo } = require('mongoose');
 const productManager = new ProductManager();
 productManager.loadProductsFromFile();
 
@@ -55,7 +57,15 @@ router.get('/carts/:cid',getCarsIdFile);
 
 // agrego ruta para eliminar usuarios unactivos por 2 dias
 
+// pasar a router  mongo
+
 router.delete('/delete', deleteUserInactivo);
+
+// agrego ruta para obtener todos los usuarios y sus datos nombre, correo y rol
+
+router.get('/users', getAllUsers);
+
+
 
 
 module.exports = router;

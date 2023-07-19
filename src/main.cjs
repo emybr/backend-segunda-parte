@@ -1,7 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 8080;
-const { engine } = require('express-handlebars');
+const port = process.env.PORT;
+const  {engine}   = require('express-handlebars');
 const httpServer = require('http').createServer(app);
 const { Server } = require('socket.io');
 const sessionConfig = require('../src/sessions/sessionConfig.cjs');
@@ -30,8 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', engine());
 app.set('views', '../views');
 app.set('view engine', 'handlebars');
-// app.use(express.static('../public'));
-// app.use(express.static(path.join(__dirname, '../public')));
+
 
 const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));

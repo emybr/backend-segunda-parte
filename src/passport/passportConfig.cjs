@@ -6,12 +6,14 @@ const { mensajes, errores } = require('../errores/errores.cjs');
 const UserManagerDb  = require('../dao/mongo/user-manager-db.cjs');
 const userManagerDb = new UserManagerDb();
 
+
+
 const passportConfig = (app) => {
     // Configuración de passport local
     passport.use(new passportLocal(
         { usernameField: 'email' },
         async (email, password, done) => {
-            const user = await userManagerDb.getUserByEmail(email);
+            const user = await userManagerDb.getUserByField('email', email);
             if (!user) {
                 return done(null, false, { message: mensajes[errores.ERROR_LOGIN] });
             }
@@ -30,12 +32,13 @@ const passportConfig = (app) => {
 
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await userManagerDb.getUserById(id);
+            const user = await userManagerDb.getUserByField('_id', id);
             done(null, user);
         } catch (error) {
             done(error);
         }
     });
+  
 
     // Configuración de passport GitHub
     passport.use(new passportGithub({

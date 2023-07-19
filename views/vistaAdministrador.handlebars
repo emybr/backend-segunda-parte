@@ -1,0 +1,71 @@
+<div class="navbar">
+
+    <p class="titulo">BOUVERI</p>
+    <div class="btnSubir">
+        <a href="/products/upload">
+            <button class="btn"> Subir producto</button>
+        </a>
+    </div>
+</div>
+<div class="tituloAdministrador">
+    <h1 class="productoTitulo">USUARIOS</h1>
+</div>
+{{#if users}}
+<div class="itemsTarjeta">
+    {{#each users}}
+    <div class="tarjetaAdmin">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="imagen" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
+            </svg>
+        </div>
+        <p class="titleTarjeta">{{this.nombre}}</p>
+        <div class="ParrafoTarjeta">
+            <p>{{this.apellido}}</p>
+            <p>Rol: {{this.role}}</p>
+            <p>Email: {{this.email}}</p>
+        </div>
+        <form action="/db/mongo/setRoleByEmail/{{email}}" method="POST">
+            <select name="rol" id="rol">
+                <option value="admin">admin</option>
+                <option value="user">user</option>
+                <option value="premium">premium</option>
+            </select>
+            <button type="submit" class="boton">Editar Rol</button>
+        </form>
+        <div class="btnEliminar">
+            <form action="db/delet/users/{{email}}" method="POST">
+                <button type="submit" class="boton" name="eliminar">Eliminar</button>
+            </form>
+        </div>
+    </div>
+    {{/each}}
+</div>
+<div>
+    {{#if totalPages}}
+    <div>
+        {{#if prevLink}}
+        <button class="botonAnterior" onclick="window.location.href='{{prevLink}}'">Anterior</button>
+        {{/if}}
+        {{#if hasNextPage}}
+        <button class="botonSiguiente" onclick="window.location.href='{{nextLink}}'">Siguiente</button>
+        {{/if}}
+    </div>
+    {{/if}}
+</div>
+
+{{else}}
+<p>No hay usuarios disponibles.</p>
+{{/if}}
+<footer>
+    <form action="/logout" method="POST">
+        <button class="botonCerrarSesion" type="submit" name="logout">Cerrar sesión</button>
+    </form>
+</footer>
+
+

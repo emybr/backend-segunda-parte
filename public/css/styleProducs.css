@@ -189,3 +189,9 @@
     box-shadow: inset 4px 4px 12px #c5c5c5,
         inset -4px -4px 12px #ffffff;
 }
+
+.btnSubir{
+    display: flex;
+    margin-left: -5%;
+    
+}

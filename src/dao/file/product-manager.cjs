@@ -1,6 +1,8 @@
 const fs = require('fs');
 const { json } = require('stream/consumers');
 
+
+
 class ProductManager  {
     constructor() {
         this.products = []; // Almacena la lista de productos

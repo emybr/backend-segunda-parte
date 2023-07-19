@@ -1,32 +1,30 @@
 const Database = require('../../config/config.cjs');
+const { createDocument, getDocument, getTotalDocuments, updateDocument } = require('./factory/factoryMd.cjs');
 
 class CartsManagerDb {
     constructor() {
         this.db = new Database();
+        this.createDocument = createDocument;
+        this.getDocument = getDocument;
+        this.getTotalDocuments = getTotalDocuments;
+        this.updateDocument = updateDocument;
     }
 
 
     async addCart(email) {
         try {
-            if (!this.cartsCollection) {
-                await this.db.connectToDatabase();
-            }
-            const result = await this.cartsCollection.insertOne({ email, products: [] });
-            return result;
+            const document = { email, products: [] };
+            await this.createDocument('cartsCollection', document);
         } catch (e) {
             console.error(e);
         }
     }
 
 
-
     async addProductToCart(email, product) {
         console.log(product);
         try {
-            if (!this.db.cartsCollection) {
-                await this.db.connectToDatabase();
-            }
-            const cart = await this.db.cartsCollection.findOne({ email });
+            const cart = await this.getDocument('cartsCollection', { email });
             if (cart) {
                 const existingProduct = cart.products.find(p => p.id === parseInt(product.id));
                 if (existingProduct) {
@@ -45,10 +43,10 @@ class CartsManagerDb {
                     };
                     cart.products.push(cartProduct);
                 }
-                await this.db.cartsCollection.updateOne({ email }, { $set: { products: cart.products } });
+                await this.db.cartsCollection.replaceOne({ email }, cart);
                 console.log("Producto agregado al carrito");
             } else {
-                await this.db.cartsCollection.insertOne({
+                const newCart = {
                     email: email,
                     timestamp: new Date(),
                     products: [{
@@ -61,21 +59,20 @@ class CartsManagerDb {
                         stock: parseInt(product.stock),
                         quantity: 1
                     }]
-                });
+                };
+                await this.createDocument('cartsCollection', newCart);
                 console.log("Carrito creado y producto agregado");
             }
         } catch (e) {
             console.error(e);
         }
     }
-    
+
+
 
     async updateCartIdUser(email) {
         try {
-            if (!this.db.cartsCollection || !this.usersCollection) {
-                await this.db.connectToDatabase();
-            }
-            const cart = await this.db.cartsCollection.findOne({ email });
+            const cart = await this.getDocument('cartsCollection', { email });
             if (cart) {
                 await this.db.usersCollection.updateOne({ email }, { $set: { cartId: cart._id } });
                 console.log("CartId actualizado para el usuario", email);
@@ -90,50 +87,40 @@ class CartsManagerDb {
 
     async getTotalProducts() {
         try {
-            if (!this.database) {
-                await this.connectToDatabase();
-            }
-            const totalProducts = await this.database.countDocuments();
+            const totalProducts = await this.getTotalDocuments('database');
             return totalProducts;
         } catch (e) {
             console.error(e);
         }
     }
 
-
     async getTotalCarts() {
         try {
-            if (!this.db.cartsCollection) {
-                await this.db.connectToDatabase();
-            }
-            const totalCarts = await this.db.cartsCollection.countDocuments();
+            const totalCarts = await this.getTotalDocuments('cartsCollection');
             return totalCarts;
         } catch (e) {
             console.error(e);
         }
     }
 
+
+
     async getCartsByEmail(email) {
         try {
-            if (!this.db.cartsCollection) {
-                await this.db.connectToDatabase();
-            }
-            const cart = await this.db.cartsCollection.findOne({ email });
+            const cart = await this.getDocument('cartsCollection', { email });
             return cart;
         } catch (error) {
             console.error(error);
             throw new Error('Error getting cart');
         }
     }
-    
+
+
     // Actualizar el carrito del usuario después de la compra
 
     async updateCartAfterPurchase(email, purchasedProductIds) {
         try {
-            if (!this.db.cartsCollection) {
-                await this.db.connectToDatabase();
-            }
-            const cart = await this.db.cartsCollection.findOne({ email });
+            const cart = await this.getDocument('cartsCollection', { email });
             if (!cart) {
                 throw new Error(`Cart with ID ${email} not found`);
             }
@@ -145,29 +132,29 @@ class CartsManagerDb {
         }
     }
 
-//   Agrego nuevo método para obtener todos los carritos
 
-async removeCartItem(email, productId) {
-    try {
-        if (!this.db.cartsCollection) {
-            await this.db.connectToDatabase();
+    //   Agrego nuevo método para obtener todos los carritos
+
+    async removeCartItem(email, productId) {
+        try {
+            if (!this.db.cartsCollection) {
+                await this.db.connectToDatabase();
+            }
+            const result = await this.db.cartsCollection.updateOne(
+                { email: email },
+                { $pull: { products: { id: productId } } }
+            );
+            return result;
+        } catch (e) {
+            console.error(e);
         }
-        const result = await this.db.cartsCollection.updateOne(
-            { email: email },
-            { $pull: { products: { id: productId } } }
-        );
-        return result;
-    } catch (e) {
-        console.error(e);
     }
+
+
+
 }
 
 
-
-
-}
-        
-   
 
 
 module.exports = CartsManagerDb;

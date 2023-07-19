@@ -1,6 +1,7 @@
 const {ProductManager} = require ('../../dao/file/product-manager.cjs')
 const productManager = new ProductManager
 productManager.loadProductsFromFile();
+
 const {winstonLogger} = require('../../middleware/logger.cjs')
 const {generateProducts} = require('../../middleware/productsFaker.cjs')
 

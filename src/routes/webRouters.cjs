@@ -5,9 +5,10 @@ const passport = require('passport');
 const { ensureAuthenticated } = require('../middleware/autenticacion.cjs');
 const { getUserController, getRegisterUser, postRegisterUser, postLoginUser, postLogout, getGenerateResetLink, getResetToken, postResetPassword, postResetToken, updateUserFile, postPremiumUser, } = require('../Controllers/mongo/user.controlers.cjs');
 const {getCartsByEmail} = require('../Controllers/mongo/cars.controlers.cjs')
-const { getProducDB} = require('../Controllers/mongo/products.controlers.cjs');
+const { getProducDB, getUpProducts } = require('../Controllers/mongo/products.controlers.cjs');
 const { postTiketDB } = require('../Controllers/mongo/tickets.controlers.cjs');
 const { upload } = require('../middleware/multer.cjs');
+const {getAdmin} = require('../Controllers/mongo/user.controlers.cjs')
 
 // agrego ruta para login
 
@@ -65,7 +66,7 @@ webRouter.get('/chat', getChat);
 
 // agrego ruta para ver  productos de mongo
 
-webRouter.get('/products/db', getProducDB);
+webRouter.get('/products/db',ensureAuthenticated, getProducDB);
 
 // agrego ruta para ver carrito  carrito de mongo
 
@@ -75,6 +76,13 @@ webRouter.get('/carts/:email', ensureAuthenticated, getCartsByEmail);
 
 webRouter.post('/mongo/tickets', postTiketDB);
 
+//agrego ruta para vista para subir productos a mongo
+
+webRouter.get('/products/upload', getUpProducts);
+
+// agrego ruta para administrador
+
+webRouter.get('/admin', getAdmin);
 
 module.exports = { webRouter };
 

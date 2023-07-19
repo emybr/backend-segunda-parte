@@ -4,13 +4,16 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { sendEmail } = require('../../service/email.service.cjs');
 const UserModels = require('./models/user.models.cjs');
-const { createDocument, getDocument, getDocuments } = require('./factory/factoryMd.cjs');
+const { createDocument, updateDocument, getDocument,getBasicUserData } = require('./factory/factoryMd.cjs');
 const CartsManagerDb = require('./carts-manager.db.cjs');
 
 class UserManagerDb {
     constructor() {
         this.db = new Database();
         this.createDocument = createDocument;
+        this.updateDocument = updateDocument;
+        this.getDocument = getDocument;
+        this.getBasicUserData = getBasicUserData;
         this.cartsCollection = new CartsManagerDb();
 
     }
@@ -33,12 +36,11 @@ class UserManagerDb {
 
 
 
+
     async setAdminRole(email) {
+        console.log(email);
         try {
-            if (!this.db.usersCollection) {
-                await this.db.connectToDatabase();
-            }
-            const user = await this.db.usersCollection.findOne({ email });
+            const user = await this.getDocument('usersCollection', { email });
             if (!user) {
                 throw new Error('User not found');
             }
@@ -50,12 +52,9 @@ class UserManagerDb {
         }
     }
 
-    async setPremiunRole(email) {
+    async setPremiumRole(email) {
         try {
-            if (!this.db.usersCollection) {
-                await this.db.connectToDatabase();
-            }
-            const user = await this.db.usersCollection.findOne({ email });
+            const user = await this.getDocument('usersCollection', { email });
             if (!user) {
                 throw new Error('User not found');
             }
@@ -67,15 +66,27 @@ class UserManagerDb {
         }
     }
 
+    async setUserRole(email) {
+        try {
+            const user = await this.getDocument('usersCollection', { email });
+            if (!user) {
+                throw new Error('User not found');
+            }
+            user.role = 'user';
+            await this.db.usersCollection.replaceOne({ email }, user);
+            return user;
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
 
+
+    //ver
 
     async validateUser(email, password) {
         try {
-            if (!this.db.usersCollection) {
-                await this.db.connectToDatabase();
-            }
-            const user = await this.db.usersCollection.findOne({ email, password });
+            const user = await this.getDocument('usersCollection', { email, password });
             return user !== null;
         } catch (e) {
             console.error(e);
@@ -83,35 +94,20 @@ class UserManagerDb {
     }
 
 
+
     // agrego passport y passport-local
 
 
-    async getUserByEmail(email) {
+    async getUserByField(field, value) {
         try {
-            if (!this.db.usersCollection) {
-                await this.db.connectToDatabase();
-            }
-            const user = await this.db.usersCollection.findOne({ email });
+            const query = { [field]: value };
+            const user = await this.getDocument('usersCollection', query);
             return user;
         } catch (error) {
             console.error(error);
-            throw new Error(`Error al obtener el usuario por correo electrónico: ${error.message}`);
+            throw new Error(`Error al obtener el usuario por ${field}: ${error.message}`);
         }
     }
-
-    async getUserById(id) {
-        try {
-            if (!this.db.usersCollection) {
-                await this.db.connectToDatabase();
-            }
-            const user = await this.db.usersCollection.findOne({ _id: id });
-            return user;
-        } catch (error) {
-            console.error(error);
-            throw new Error(`Error al obtener el usuario por id: ${error.message}`);
-        }
-    }
-
 
 
     async actualizarContraseña(email) {
@@ -165,40 +161,35 @@ class UserManagerDb {
         }
     }
 
+
     async updateUserFiles(email, fileUrls) {
-        console.log(fileUrls, 'fileUrls');
         try {
-            if (!this.db.usersCollection) {
-                await this.db.connectToDatabase();
-            }
-            await this.db.usersCollection.updateOne({ email }, { $set: { files: fileUrls } });
+            const filter = { email }; // Filtro para buscar el usuario por su email
+            const update = { files: fileUrls }; // Campo "files" y valor a actualizar
+
+            await this.updateDocument('usersCollection', filter, update);
         } catch (error) {
             console.error(error);
+            throw new Error('Error al actualizar los archivos del usuario');
         }
     }
 
 
     async setLastConnection(email) {
         try {
-            if (!this.db.usersCollection) {
-                await this.db.connectToDatabase();
-            }
+            const filter = { email }; // Filtro para buscar el usuario por su email
+            const update = { lastConnection: new Date() }; // Campo "lastConnection" y valor a actualizar
 
-            const updatedUser = await this.db.usersCollection.findOneAndUpdate(
-                { email },
-                { $set: { lastConnection: new Date() } },
-                { returnOriginal: false }
-            );
-
-            if (updatedUser.value) {
-                console.log('El campo lastConnection ha sido actualizado correctamente');
-            } else {
-                console.log('No se pudo actualizar el campo lastConnection');
-            }
+            await this.updateDocument('usersCollection', filter, update);
+            console.log('El campo lastConnection ha sido actualizado correctamente');
         } catch (error) {
             console.error('Error al actualizar lastConnection:', error);
+            throw new Error('Error al actualizar lastConnection');
         }
     }
+
+
+
 
 
     async deleteInactiveUsers() {
@@ -228,6 +219,55 @@ class UserManagerDb {
         } catch (error) {
             console.error('Error al eliminar usuarios inactivos:', error);
             throw new Error('Error al eliminar usuarios inactivos');
+        }
+    }
+ 
+    async isAdminUser(email) {
+        try {
+            const user = await this.getDocument('usersCollection', { email });
+            return user?.role === 'admin';
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    async isPremiumUser(email) {
+        try {
+            const user = await this.getDocument('usersCollection', { email });
+            return user?.role === 'premium';
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    // agrego fucion para obtener todos los usuarios y sus datos nombre, correo y rol
+   
+    async  getUsersData() {
+        try {
+            const projection = { nombre: 1, email: 1, role: 1, apellido: 1 };
+            const users = await this.getBasicUserData('usersCollection', {}, projection);
+            return users;
+        } catch (error) {
+            console.error(error);
+            throw new Error('Error al obtener los usuarios');
+        }
+    }
+
+// agrego funcion para eliminar un usuario por email desde administrador
+
+    async deleteUser(email) {
+        try {
+            const user = await this.getDocument('usersCollection', { email });
+            if (!user) {
+                throw new Error('User not found');
+            }
+            await this.db.usersCollection.deleteOne({ email });
+            await this.db.cartsCollection.deleteOne({ _id: user.cartId });
+            return user;
+        } catch (e) {
+            console.error(e);
         }
     }
 
